@@ -1,0 +1,13 @@
+dist/*
+lib_managed/
+project/boot/
+project/plugins/project/
+src_managed/
+target/
+
+.cache
+.history
+.jvmopts
+.lib/
+*.swp
+*.swo
