@@ -1,5 +1,7 @@
 ## Modelling
 
+![CI](https://github.com/sirgraystar/mandyville-modelling/actions/workflows/ci.yml/badge.svg)
+
 Predictive modelling for mandyville. A reimplementation of my thesis
 in Scala, but hopefully better and more accurate.
 
