@@ -19,7 +19,5 @@ jobs:
       run: sbt clean coverage test
     - name: Coverage report
       run: sbt coverageReport
-      with:
-        fail_ci_if_error: true
     - name: Format check
       run: sbt scalafmtCheck test:scalafmtCheck
