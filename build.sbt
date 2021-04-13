@@ -24,5 +24,6 @@ lazy val settings = (project in file("."))
         libraryDependencies += scalaTic,
         libraryDependencies += scalaTest % Test,
         libraryDependencies ++= quill,
-        libraryDependencies += pg
+        libraryDependencies += pg,
+        scalacOptions ++= Seq("-deprecation", "-feature")
     )

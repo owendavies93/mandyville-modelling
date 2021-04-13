@@ -11,3 +11,5 @@ target/
 .lib/
 *.swp
 *.swo
+
+src/main/resources/production.conf
