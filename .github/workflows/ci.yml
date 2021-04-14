@@ -21,6 +21,11 @@ jobs:
       run: sbt coverageReport
     - name: Format check
       run: sbt scalafmtCheck test:scalafmtCheck
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
     - uses: act10ns/slack@v1
       env:
         SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
