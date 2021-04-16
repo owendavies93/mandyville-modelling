@@ -10,7 +10,7 @@ import io.getquill.{PostgresJdbcContext, SnakeCase}
   * Generally, you'll need to import Database.ctx and Database.ctx._
   * to contruct queries and the run queries with ctx.run()
   */
-package object Database {
+object Database {
 
   private val config = Config()
   private val pgDataSource = new PGSimpleDataSource()
