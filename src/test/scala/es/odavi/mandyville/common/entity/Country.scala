@@ -1,21 +1,17 @@
 package es.odavi.mandyville.common.entity
 
+import es.odavi.mandyville.common.Schema
+
 import io.getquill.{PostgresDialect, SnakeCase, SqlMirrorContext}
 import org.scalatest.funsuite.AnyFunSuite
 
 class CountrySuite extends AnyFunSuite {
 
-  val ctx = new SqlMirrorContext(PostgresDialect, SnakeCase)
+  val ctx = new SqlMirrorContext[PostgresDialect, SnakeCase](
+    PostgresDialect,
+    SnakeCase
+  ) with Schema
   import ctx._
-
-  // TODO: move these table name overrides into a shared object
-  val countries = quote {
-    querySchema[Country]("countries")
-  }
-
-  val countryAlternateNames = quote {
-    querySchema[CountryAlternateName]("country_alternate_names")
-  }
 
   test("Generates correct query for simple country fetch") {
     assertResult("SELECT c.id FROM countries c WHERE c.name = 'Afghanistan'") {
@@ -44,5 +40,4 @@ class CountrySuite extends AnyFunSuite {
       ctx.run(q).string
     }
   }
-
 }
