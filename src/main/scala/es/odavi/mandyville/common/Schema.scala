@@ -15,6 +15,9 @@ import io.getquill.context.Context
   * SnakeCase. This ensures that queries produced by mirror contexts
   * in tests are reflective of queries that are passed to the actual
   * database.
+  *
+  * This trait also provides decoders and encoders for custom types
+  * used in the mandyville database.
   */
 trait Schema { this: Context[PostgresDialect, SnakeCase] =>
 
@@ -33,9 +36,24 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
       querySchema[CountryAlternateName]("country_alternate_names")
     }
 
+  def fixtures =
+    quote {
+      querySchema[Fixture]("fixtures")
+    }
+
+  def positions =
+    quote {
+      querySchema[Position]("positions")
+    }
+
   def players =
     quote {
       querySchema[Player]("players")
+    }
+
+  def playersFixtures =
+    quote {
+      querySchema[PlayerFixture]("players_fixtures")
     }
 
   def teams =
