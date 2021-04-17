@@ -32,4 +32,14 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
     quote {
       querySchema[Player]("players")
     }
+
+  def teams =
+    quote {
+      querySchema[Team]("teams")
+    }
+
+  def teamAlternateNames =
+    quote {
+      querySchema[TeamAlternateName]("team_alternate_names")
+    }
 }
