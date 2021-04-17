@@ -32,5 +32,5 @@ object Database {
   dbConfig.setIdleTimeout(1000)
 
   private val dbSource = new HikariDataSource(dbConfig)
-  val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource)
+  val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource) with Schema
 }
