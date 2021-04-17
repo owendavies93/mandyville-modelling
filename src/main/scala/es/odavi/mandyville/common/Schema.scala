@@ -18,6 +18,11 @@ import io.getquill.context.Context
   */
 trait Schema { this: Context[PostgresDialect, SnakeCase] =>
 
+  def competitions =
+    quote {
+      querySchema[Competition]("competitions")
+    }
+
   def countries =
     quote {
       querySchema[Country]("countries")
