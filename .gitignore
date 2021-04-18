@@ -5,10 +5,12 @@ project/plugins/project/
 src_managed/
 target/
 
+.bsp/sbt.json
 .cache
 .history
 .jvmopts
 .lib/
+.idea
 *.swp
 *.swo
 
