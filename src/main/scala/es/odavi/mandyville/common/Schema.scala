@@ -41,6 +41,21 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
       querySchema[Fixture]("fixtures")
     }
 
+  def fplGameweeks =
+    quote {
+      querySchema[FPLGameweek]("fpl_gameweeks")
+    }
+
+  def fplPositions =
+    quote {
+      querySchema[FPLPosition]("fpl_positions")
+    }
+
+  def fplSeasonInfo =
+    quote {
+      querySchema[FPLSeasonInfo]("fpl_season_info")
+    }
+
   def positions =
     quote {
       querySchema[Position]("positions")
