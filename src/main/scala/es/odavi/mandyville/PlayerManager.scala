@@ -29,12 +29,15 @@ private class PlayerDatabaseImp extends PlayerDatabaseService {
       playersFixtures.filter(p => p.playerId == lift(player.id))
     })
 
-  def getSeasonInfoForPlayer(player: Player,
-                             context: Context): FPLSeasonInfo = {
+  def getSeasonInfoForPlayer(
+    player: Player,
+    context: Context
+  ): FPLSeasonInfo = {
     val season = context.gameweek.season
     val q = quote {
       fplSeasonInfo.filter(f =>
-        f.playerId == lift(player.id) && f.season == lift(season))
+        f.playerId == lift(player.id) && f.season == lift(season)
+      )
     }
 
     ctx.run(q).head
@@ -60,8 +63,10 @@ class PlayerManager(service: PlayerDatabaseService) {
     * @param player the player we're interested in
     * @param context the context in which we want to find the position
     */
-  def getPositionForPlayer(player: Player,
-                           context: Context): PositionCategory.Value = {
+  def getPositionForPlayer(
+    player: Player,
+    context: Context
+  ): PositionCategory.Value = {
     val info = service.getSeasonInfoForPlayer(player, context)
 
     positionMap(info.fplSeasonId)

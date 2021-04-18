@@ -10,4 +10,3 @@ import common.entity.FPLGameweek
   *   predict for.
   */
 case class Context(gameweek: FPLGameweek)
-
