@@ -1,6 +1,7 @@
 package es.odavi.mandyville.common.entity
 
-import java.util.Date
+import org.joda.time.LocalDate
+
 import scala.math.BigDecimal
 
 /** A football fixture
@@ -24,7 +25,7 @@ case class Fixture(
   winningTeamId: Option[Int],
   homeTeamGoals: Option[Short],
   awayTeamGoals: Option[Short],
-  fixtureDate: Option[Date]
+  fixtureDate: Option[LocalDate]
 )
 
 /** An enumeration defining the categories of position that a player

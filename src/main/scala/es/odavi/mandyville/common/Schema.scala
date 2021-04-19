@@ -1,9 +1,11 @@
 package es.odavi.mandyville.common
 
 import entity._
-
 import io.getquill.{PostgresDialect, SnakeCase}
 import io.getquill.context.Context
+import org.joda.time.LocalDate
+
+import java.util.Date
 
 /** Provides mappings for custom identifiers to tables in tests
   * database. This is required because the database table names are
@@ -80,4 +82,7 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
     quote {
       querySchema[TeamAlternateName]("team_alternate_names")
     }
+
+  implicit val jodaLocalDateDecoder =
+    MappedEncoding[Date, LocalDate](LocalDate.fromDateFields)
 }
