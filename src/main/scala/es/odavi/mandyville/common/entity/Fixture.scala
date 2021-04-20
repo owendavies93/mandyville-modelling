@@ -70,7 +70,7 @@ case class Position(
   * @param xa the expected assists of the player
   * @param xgBuildup the xgBuildup of the player
   * @param xgChain the xgChain of the player
-  * @param postitionId the position of the player
+  * @param positionId the position of the player
   * @param npg the non-penalty goals scored by the player
   * @param npxg the expected non-penalty goals scored by the player
   */
