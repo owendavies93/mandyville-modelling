@@ -53,17 +53,59 @@ class SimpleModelSuite
     assert(fixtures.size == testFixtures.count { case (_, f) => f.hasDate })
   }
 
+  // Tests from here on in can share a context and model
+  val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
+  val context = Context(gameweek)
+
+  val dbService = mock[PlayerDatabaseService]
+  when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
+
+  val model = new SimpleModel(player, context, new PlayerManager(dbService))
+
   test("getFixtures is cached") {
-    val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
-    val context = Context(gameweek)
-
-    val dbService = mock[PlayerDatabaseService]
-    when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
-
-    val model = new SimpleModel(player, context, new PlayerManager(dbService))
     model.invokePrivate(getFixtures())
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
     model.invokePrivate(getFixtures())
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
+  }
+
+  test("chanceOfRedCard returns a decimal between 0 and 1") {
+    val red = model.chanceOfRedCard()
+    assert(red >= 0)
+    assert(red <= 1)
+  }
+
+  test("chanceOfYellowCard returns a decimal between 0 and 1") {
+    val yellow = model.chanceOfYellowCard()
+    assert(yellow >= 0)
+    assert(yellow <= 1)
+  }
+
+  test("goals, assists and conceded are all non-negative and non-zero") {
+    assert(model.expectedAssists() > 0)
+    assert(model.expectedGoals() > 0)
+    assert(model.expectedConceded() > 0)
+  }
+
+  test("expectedMinutes returns a decimal between 0 and 90 inclusive") {
+    val mins = model.expectedMinutes()
+    assert(mins >= 0)
+    assert(mins <= 90)
+  }
+
+  test("All calculations are pure functions") {
+    val red = model.chanceOfRedCard()
+    val yellow = model.chanceOfYellowCard()
+    val mins = model.expectedMinutes()
+    val conceded = model.expectedConceded()
+    val goals = model.expectedGoals()
+    val assists = model.expectedAssists()
+
+    assert(red == model.chanceOfRedCard())
+    assert(yellow == model.chanceOfYellowCard())
+    assert(mins == model.expectedMinutes())
+    assert(conceded == model.expectedConceded())
+    assert(goals == model.expectedGoals())
+    assert(assists == model.expectedAssists())
   }
 }
