@@ -1,7 +1,8 @@
 package es.odavi.mandyville
 
+import com.github.nscala_time.time.Imports.DateTime
 import es.odavi.mandyville.common.entity.{Fixture, PlayerFixture}
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 
 import scala.util.Random
 
@@ -11,6 +12,9 @@ import scala.util.Random
 object TestUtils {
 
   /** Generates a dummy PlayerFixture and Fixture pair
+    *
+    * If a seasons and date are not provided, nonsensical combinations
+    * may be produced.
     *
     * @param playerId - the ID of the player
     * @param teamId - the ID of the team the player played for
@@ -22,7 +26,7 @@ object TestUtils {
   def getDummyFixtureInfo(
     playerId: Int,
     teamId: Int,
-    date: Option[LocalDate] = Option(LocalDate.parse("2020-01-01")),
+    date: Option[LocalDate] = maybeDate,
     season: Short = 2020,
     yellow: Boolean = false,
     red: Boolean = false
@@ -64,16 +68,32 @@ object TestUtils {
     )
   }
 
-  private def maybeBigDecimal: Option[BigDecimal] =
-    if (Random.nextFloat() < 0.1) None else Option(randomBigDecimal)
+  private def maybe[T](thing: T): Option[T] =
+    if (Random.nextFloat() < 0.1) None else Option(thing)
 
-  private def maybeShort: Option[Short] =
-    if (Random.nextFloat() < 0.1) None else Option(randomShort)
+  private def maybeBigDecimal: Option[BigDecimal] = maybe(randomBigDecimal)
+
+  private def maybeDate: Option[LocalDate] = maybe(randomDate)
+
+  private def maybeShort: Option[Short] = maybe(randomShort)
 
   private def randomBigDecimal: BigDecimal =
     BigDecimal(Random.between(0.0, 5.0))
 
   private def randomId: Int = Random.between(0, 10000)
+
+  // Fix some start and end periods for plausible fixture dates and
+  // pick a random date between that period
+  private def randomDate: LocalDate = {
+    val start = new LocalDate(2016, 8, 1);
+    val end = new LocalDate(2021, 7, 1);
+
+    val random = Random.between(
+      start.toDateTimeAtStartOfDay.getMillis(),
+      end.toDateTimeAtStartOfDay.getMillis()
+    )
+    new DateTime(random).toLocalDate
+  }
 
   private def randomShort: Short = Random.between(0, 10).toShort
 }
