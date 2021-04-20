@@ -91,7 +91,7 @@ class PlayerManager(service: PlayerDatabaseService) {
     val deadline = context.gameweek.deadline.withTimeAtStartOfDay()
     allFixtures
       .filter({
-        case (_, fixture) => fixture.fixtureDate.isDefined
+        case (_, fixture) => fixture.hasDate
       })
       .filter({
         case (_, fixture) =>

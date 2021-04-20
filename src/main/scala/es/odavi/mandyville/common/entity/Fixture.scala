@@ -26,7 +26,12 @@ case class Fixture(
   homeTeamGoals: Option[Short],
   awayTeamGoals: Option[Short],
   fixtureDate: Option[LocalDate]
-)
+) {
+
+  def hasBeenPlayed: Boolean =
+    homeTeamGoals.isDefined && awayTeamGoals.isDefined
+  def hasDate: Boolean = fixtureDate.isDefined
+}
 
 /** An enumeration defining the categories of position that a player
   * can play in
