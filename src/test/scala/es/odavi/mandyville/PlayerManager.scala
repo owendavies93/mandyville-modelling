@@ -1,18 +1,11 @@
 package es.odavi.mandyville
 
+import es.odavi.mandyville.TestUtils.getDummyFixtureInfo
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
-import es.odavi.mandyville.common.entity.{
-  FPLGameweek,
-  FPLSeasonInfo,
-  Fixture,
-  Player,
-  PlayerFixture
-}
+import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
 import org.joda.time.LocalDate
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
-
-import scala.util.Random
 
 class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
   private val dbService = mock[PlayerDatabaseService]
@@ -50,39 +43,5 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
     val relevantFixtures =
       new PlayerManager(dbService).getRelevantFixtures(player, context)
     assert(relevantFixtures.size == 1)
-  }
-
-  // Currently doesn't generate fixture stats as the tests don't
-  // require them
-  def getDummyFixtureInfo(
-    playerId: Int,
-    teamId: Int,
-    date: Option[LocalDate],
-    season: Short
-  ): (PlayerFixture, Fixture) = {
-    val playerFixtureId = Random.between(1, 10000)
-    val fixtureId = Random.between(1, 10000)
-    (
-      PlayerFixture(
-        playerFixtureId,
-        playerId,
-        fixtureId,
-        teamId,
-        90,
-        false,
-        false,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-      ),
-      Fixture(fixtureId, 1, teamId, 1, season, None, None, None, date)
-    )
   }
 }
