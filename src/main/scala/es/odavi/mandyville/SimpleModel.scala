@@ -22,7 +22,7 @@ class SimpleModel(
   /** Find the probability of the player getting a yellow card in the
     * gameweek given by the context.
     *
-    * Return the proportion of games where the player has recieved a
+    * Return the proportion of games where the player has received a
     * red card.
     */
   override def chanceOfYellowCard(): BigDecimal =
@@ -48,8 +48,7 @@ class SimpleModel(
   override def expectedConceded(): BigDecimal = {
     val allGoals: List[Short] = getFixtures
       .filter {
-        case (_, f) =>
-          f.homeTeamGoals.isDefined && f.awayTeamGoals.isDefined
+        case (_, f) => f.hasBeenPlayed
       }
       .map {
         case (p, f) =>
