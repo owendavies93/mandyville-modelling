@@ -11,7 +11,11 @@ import scala.math.BigDecimal.RoundingMode
   * @param player the player we want to model
   * @param context the context in which we are modelling
   */
-abstract class Model(player: Player, context: Context) {
+abstract class Model(
+  player: Player,
+  context: Context,
+  playerManager: PlayerManager
+) {
 
   /** Find the predicted points for the gameweek provided in the
     * given context.
@@ -22,7 +26,7 @@ abstract class Model(player: Player, context: Context) {
     *
     * @return the total predicted points
     */
-  def pointsForGameweek(playerManager: PlayerManager): BigDecimal = {
+  def pointsForGameweek(): BigDecimal = {
     val mins = expectedMinutes()
 
     if (mins == 0) 0

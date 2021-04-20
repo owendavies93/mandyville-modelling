@@ -19,7 +19,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
   val assists: BigDecimal = 1.0
   val goals: BigDecimal = 1.0
 
-  class NoPlayModelStub extends Model(player, context) {
+  class NoPlayModelStub extends Model(player, context, playerManager) {
     override def chanceOfRedCard() = 0
     override def chanceOfYellowCard() = 0.4
     override def expectedAssists(): BigDecimal = assists
@@ -31,7 +31,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
   test("Returns zero points for zero minutes") {
     assertResult(0) {
       val noPlay = new NoPlayModelStub()
-      noPlay.pointsForGameweek(playerManager)
+      noPlay.pointsForGameweek()
     }
   }
 
@@ -48,7 +48,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val full90 = new Full90ModelStub()
-      full90.pointsForGameweek(playerManager)
+      full90.pointsForGameweek()
     }
   }
 
@@ -65,7 +65,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val cleanSheet = new Full90CleanSheetModel()
-      cleanSheet.pointsForGameweek(playerManager)
+      cleanSheet.pointsForGameweek()
     }
   }
 
@@ -81,7 +81,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val sub = new SubModel()
-      sub.pointsForGameweek(playerManager)
+      sub.pointsForGameweek()
     }
   }
 }
