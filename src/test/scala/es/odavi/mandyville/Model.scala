@@ -7,11 +7,11 @@ import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
 
 class ModelSuite extends AnyFunSuite with MockitoSugar {
-  val player = Player(1, "Owen", "Davies", 1, None, None, None)
-  val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
-  val context = Context(gameweek)
-  val dbService = mock[PlayerDatabaseService]
-  val seasonInfo = FPLSeasonInfo(1, 1, 2020, 1, 1)
+  private val player = Player(1, "Owen", "Davies", 1, None, None, None)
+  private val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
+  private val context = Context(gameweek)
+  private val dbService = mock[PlayerDatabaseService]
+  private val seasonInfo = FPLSeasonInfo(1, 1, 2020, 1, 1)
 
   when(dbService.getSeasonInfoForPlayer(player, context)).thenReturn(seasonInfo)
 

@@ -15,16 +15,16 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Random
 
 class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
-  val dbService = mock[PlayerDatabaseService]
+  private val dbService = mock[PlayerDatabaseService]
   val season: Short = 2020
   val goalkeeperId: Short = 1
   val playerId = 1
 
-  val seasonInfo = FPLSeasonInfo(1, 1, season, 1, goalkeeperId)
-  val player = Player(playerId, "Owen", "Davies", 1, None, None, None)
-  val today = LocalDate.parse("2020-01-01")
-  val gameweek = FPLGameweek(1, season, 1, today.toDateTimeAtStartOfDay)
-  val context = Context(gameweek)
+  private val seasonInfo = FPLSeasonInfo(1, 1, season, 1, goalkeeperId)
+  private val player = Player(playerId, "Owen", "Davies", 1, None, None, None)
+  private val today = LocalDate.parse("2020-01-01")
+  private val gameweek = FPLGameweek(1, season, 1, today.toDateTimeAtStartOfDay)
+  private val context = Context(gameweek)
 
   when(dbService.getSeasonInfoForPlayer(player, context)).thenReturn(seasonInfo)
 
@@ -34,10 +34,10 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
     }
   }
 
-  val testFixtureDates =
+  private val testFixtureDates =
     List[Option[String]](Option("2020-01-02"), None, Option("2019-01-01"))
 
-  val fixtureInfo = testFixtureDates.map { dateString =>
+  private val fixtureInfo = testFixtureDates.map { dateString =>
     val date =
       if (dateString.isDefined) Option(LocalDate.parse(dateString.get))
       else None
