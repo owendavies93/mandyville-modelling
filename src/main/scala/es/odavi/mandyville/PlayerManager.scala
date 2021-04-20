@@ -30,7 +30,7 @@ private class PlayerDatabaseImp extends PlayerDatabaseService {
       playersFixtures
         .join(fixtures)
         .on(_.fixtureId == _.id)
-        .filter { case (p, f) => p.playerId == lift(player.id) }
+        .filter { case (p, _) => p.playerId == lift(player.id) }
     })
 
   def getSeasonInfoForPlayer(
