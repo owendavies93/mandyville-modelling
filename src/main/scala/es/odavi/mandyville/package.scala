@@ -16,37 +16,39 @@ import mandyville.common.entity.PositionCategory._
   */
 package object mandyville {
   // Point values for FPL player events
-  val AssistPoints = 3
+  val AssistPoints: Int = 3
 
-  val CleanSheetPoints = Map[PositionCategory.Value, Int](
-    Goalkeeper -> 4,
-    Defender -> 4,
-    Midfielder -> 1,
-    Forward -> 0
-  )
+  val CleanSheetPoints: Map[PositionCategory.Value, Int] =
+    Map[PositionCategory.Value, Int](
+      Goalkeeper -> 4,
+      Defender -> 4,
+      Midfielder -> 1,
+      Forward -> 0
+    )
 
   val FullPlayPoints = 2
 
-  val GoalPoints = Map[PositionCategory.Value, Int](
-    Goalkeeper -> 6,
-    Defender -> 6,
-    Midfielder -> 5,
-    Forward -> 4
-  )
+  val GoalPoints: Map[PositionCategory.Value, Int] =
+    Map[PositionCategory.Value, Int](
+      Goalkeeper -> 6,
+      Defender -> 6,
+      Midfielder -> 5,
+      Forward -> 4
+    )
 
-  val OwnGoalPoints = -2
+  val OwnGoalPoints: Int = -2
 
-  val PenaltyMissPoints = -2
+  val PenaltyMissPoints: Int = -2
 
-  val PenaltySavePoints = 5
+  val PenaltySavePoints: Int = 5
 
-  val RedCardPoints = -3
+  val RedCardPoints: Int = -3
 
-  val SubPlayPoints = 1
+  val SubPlayPoints: Int = 1
 
-  val TwoGoalsConcededPoints = -1
+  val TwoGoalsConcededPoints: Int = -1
 
-  val YellowCardPoints = -1
+  val YellowCardPoints: Int = -1
 
   // Other useful constant values
   val DecimalPlaces = 3

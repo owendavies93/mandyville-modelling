@@ -10,7 +10,7 @@ object Config {
     * If the MANDYVILLE_ENV environemnt variable is defined, use that.
     * Else, returns 'development'
     */
-  def env = sys.env.getOrElse("MANDYVILLE_ENV", "development")
+  def env: String = sys.env.getOrElse("MANDYVILLE_ENV", "development")
 
   /** Creates an instance of the config */
   def apply(): Config = {

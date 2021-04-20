@@ -1,7 +1,7 @@
 package es.odavi.mandyville.common
 
 import entity._
-import io.getquill.{PostgresDialect, SnakeCase}
+import io.getquill.{EntityQuery, PostgresDialect, SnakeCase}
 import io.getquill.context.Context
 import org.joda.time.LocalDate
 
@@ -23,66 +23,66 @@ import java.util.Date
   */
 trait Schema { this: Context[PostgresDialect, SnakeCase] =>
 
-  def competitions =
+  def competitions: Quoted[EntityQuery[Competition]] =
     quote {
       querySchema[Competition]("competitions")
     }
 
-  def countries =
+  def countries: Quoted[EntityQuery[Country]] =
     quote {
       querySchema[Country]("countries")
     }
 
-  def countryAlternateNames =
+  def countryAlternateNames: Quoted[EntityQuery[CountryAlternateName]] =
     quote {
       querySchema[CountryAlternateName]("country_alternate_names")
     }
 
-  def fixtures =
+  def fixtures: Quoted[EntityQuery[Fixture]] =
     quote {
       querySchema[Fixture]("fixtures")
     }
 
-  def fplGameweeks =
+  def fplGameweeks: Quoted[EntityQuery[FPLGameweek]] =
     quote {
       querySchema[FPLGameweek]("fpl_gameweeks")
     }
 
-  def fplPositions =
+  def fplPositions: Quoted[EntityQuery[FPLPosition]] =
     quote {
       querySchema[FPLPosition]("fpl_positions")
     }
 
-  def fplSeasonInfo =
+  def fplSeasonInfo: Quoted[EntityQuery[FPLSeasonInfo]] =
     quote {
       querySchema[FPLSeasonInfo]("fpl_season_info")
     }
 
-  def positions =
+  def positions: Quoted[EntityQuery[Position]] =
     quote {
       querySchema[Position]("positions")
     }
 
-  def players =
+  def players: Quoted[EntityQuery[Player]] =
     quote {
       querySchema[Player]("players")
     }
 
-  def playersFixtures =
+  def playersFixtures: Quoted[EntityQuery[PlayerFixture]] =
     quote {
       querySchema[PlayerFixture]("players_fixtures")
     }
 
-  def teams =
+  def teams: Quoted[EntityQuery[Team]] =
     quote {
       querySchema[Team]("teams")
     }
 
-  def teamAlternateNames =
+  def teamAlternateNames: Quoted[EntityQuery[TeamAlternateName]] =
     quote {
       querySchema[TeamAlternateName]("team_alternate_names")
     }
 
-  implicit val jodaLocalDateDecoder =
+  implicit val jodaLocalDateDecoder: MappedEncoding[Date, LocalDate] =
     MappedEncoding[Date, LocalDate](LocalDate.fromDateFields)
 }
