@@ -1,7 +1,11 @@
 package es.odavi.mandyville
 
 import com.github.nscala_time.time.Imports.DateTime
-import es.odavi.mandyville.common.entity.{Fixture, PlayerFixture}
+import es.odavi.mandyville.common.entity.{
+  FPLPlayerGameweek,
+  Fixture,
+  PlayerFixture
+}
 import org.joda.time.{DateTime, LocalDate}
 
 import scala.util.Random
@@ -68,6 +72,25 @@ object TestUtils {
     )
   }
 
+  /** Generates a dummy FPLPlayerGameweek
+    *
+    * @param playerId the ID for the player
+    * @param gameweekId the ID of the FPLGameweek
+    */
+  def getDummyPerformance(playerId: Int, gameweekId: Int): FPLPlayerGameweek =
+    FPLPlayerGameweek(
+      randomId,
+      playerId,
+      gameweekId,
+      randomShort,
+      randomShort,
+      randomShort,
+      randomBigDecimal,
+      randomInt,
+      randomInt,
+      randomInt
+    )
+
   private def maybe[T](thing: T): Option[T] =
     if (Random.nextFloat() < 0.1) None else Option(thing)
 
@@ -80,13 +103,15 @@ object TestUtils {
   private def randomBigDecimal: BigDecimal =
     BigDecimal(Random.between(0.0, 5.0))
 
+  private def randomInt = randomId
+
   private def randomId: Int = Random.between(0, 10000)
 
   // Fix some start and end periods for plausible fixture dates and
   // pick a random date between that period
   private def randomDate: LocalDate = {
-    val start = new LocalDate(2016, 8, 1);
-    val end = new LocalDate(2021, 7, 1);
+    val start = new LocalDate(2016, 8, 1)
+    val end = new LocalDate(2021, 7, 1)
 
     val random = Random.between(
       start.toDateTimeAtStartOfDay.getMillis(),

@@ -3,6 +3,7 @@ package es.odavi.mandyville
 import com.github.nscala_time.time.Imports.{richReadableInstant, DateTime}
 import es.odavi.mandyville.common.entity.PositionCategory._
 import es.odavi.mandyville.common.entity.{
+  FPLPlayerGameweek,
   FPLSeasonInfo,
   Fixture,
   Player,
@@ -15,6 +16,12 @@ import es.odavi.mandyville.common.entity.{
   */
 trait PlayerDatabaseService {
   def getAllFixturesForPlayer(player: Player): List[(PlayerFixture, Fixture)]
+
+  def getFPLPerformance(
+    player: Player,
+    context: Context
+  ): List[FPLPlayerGameweek]
+
   def getSeasonInfoForPlayer(player: Player, context: Context): FPLSeasonInfo
 }
 
@@ -31,6 +38,18 @@ private class PlayerDatabaseImp extends PlayerDatabaseService {
         .join(fixtures)
         .on(_.fixtureId == _.id)
         .filter { case (p, _) => p.playerId == lift(player.id) }
+    })
+
+  override def getFPLPerformance(
+    player: Player,
+    context: Context
+  ): List[FPLPlayerGameweek] =
+    ctx.run(quote {
+      fplPlayersGameweeks.filter(f =>
+        f.playerId == lift(player.id) && f.fplGameweekId == lift(
+          context.gameweek.id
+        )
+      )
     })
 
   def getSeasonInfoForPlayer(
@@ -61,6 +80,30 @@ class PlayerManager(service: PlayerDatabaseService) {
     3 -> Midfielder,
     4 -> Forward
   )
+
+  /** Get the actual in game performance for a player
+    *
+    * @param player the player we want to find the performance for
+    * @param context the context in which to find the performance
+    *
+    * @throws NoPerformanceException if no in game performance is found
+    */
+  @throws(classOf[NoPerformanceException])
+  def getFPLPerformance(player: Player, context: Context): FPLPlayerGameweek = {
+    val perf = service.getFPLPerformance(player, context)
+    if (perf.size == 1) perf.head
+    else {
+      // The only possibility here is that there are no performances,
+      // due to the database schema preventing there being multiple
+      // performances with the same player and gameweek IDs
+      val playerId = player.id
+      val season = context.gameweek.season
+      val gameweekNumber = context.gameweek.gameweek
+      throw new NoPerformanceException(
+        s"No performance for player #$playerId - $season GW$gameweekNumber"
+      )
+    }
+  }
 
   /** Get the FPL position for the player in the given context
     *
@@ -101,3 +144,14 @@ class PlayerManager(service: PlayerDatabaseService) {
       })
   }
 }
+
+/** An exception indicating that no relevant FPL performance was found
+  * for the given query.
+  *
+  * @param message the message
+  * @param cause the cause, defaulting to None
+  */
+final class NoPerformanceException(
+  message: String,
+  cause: Throwable = None.orNull
+) extends Exception(message, cause)

@@ -1,6 +1,6 @@
 package es.odavi.mandyville
 
-import es.odavi.mandyville.TestUtils.getDummyFixtureInfo
+import es.odavi.mandyville.TestUtils.{getDummyFixtureInfo, getDummyPerformance}
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
 import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
 import org.joda.time.LocalDate
@@ -42,6 +42,30 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
   test("Filters to relevant fixtures for the context") {
     val relevantFixtures =
       new PlayerManager(dbService).getRelevantFixtures(player, context)
-    assert(relevantFixtures.size == 1)
+    assert(relevantFixtures.size === 1)
+  }
+
+  test("Gets the correct FPL performance") {
+    val performance = getDummyPerformance(playerId, gameweek.id)
+    when(dbService.getFPLPerformance(player, context))
+      .thenReturn(List(performance))
+
+    val result = new PlayerManager(dbService).getFPLPerformance(player, context)
+    assert(result == performance)
+  }
+
+  test("Throws exception if no FPL performance is found") {
+    when(dbService.getFPLPerformance(player, context)).thenReturn(List.empty)
+
+    val thrown = intercept[NoPerformanceException] {
+      new PlayerManager(dbService).getFPLPerformance(player, context)
+    }
+
+    val id = player.id
+    val season = context.gameweek.season
+    val gw = context.gameweek.gameweek
+    assert(
+      thrown.getMessage === s"No performance for player #$id - $season GW$gw"
+    )
   }
 }
