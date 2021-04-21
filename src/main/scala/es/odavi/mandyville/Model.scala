@@ -1,6 +1,7 @@
 package es.odavi.mandyville
 
 import common.entity.Player
+import common.Comparison
 
 import scala.math.BigDecimal.RoundingMode
 
@@ -16,6 +17,17 @@ abstract class Model(
   context: Context,
   playerManager: PlayerManager
 ) {
+
+  /** Compare a prediction with the real life result
+    *
+    * @return an instance of Comparison representing our comparison
+    */
+  def comparePrediction(): Comparison = {
+    val prediction = pointsForGameweek()
+    val perf = playerManager.getFPLPerformance(player, context)
+    val actual = perf.totalPoints
+    Comparison(prediction, BigDecimal(actual))
+  }
 
   /** Find the predicted points for the gameweek provided in the
     * given context.

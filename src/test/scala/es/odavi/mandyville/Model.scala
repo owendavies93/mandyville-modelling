@@ -1,6 +1,7 @@
 package es.odavi.mandyville
 
 import com.github.nscala_time.time.Imports.DateTime
+import es.odavi.mandyville.TestUtils.getDummyPerformance
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
 import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
 import org.mockito.MockitoSugar
@@ -83,5 +84,16 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
       val sub = new SubModel()
       sub.pointsForGameweek()
     }
+  }
+
+  test("comparePrediction returns comparison") {
+    val actualPerformance = getDummyPerformance(player.id, gameweek.id)
+    when(dbService.getFPLPerformance(player, context))
+      .thenReturn(List(actualPerformance))
+
+    val model = new Full90ModelStub()
+    val evaluation = model.comparePrediction()
+
+    assert(evaluation.difference < evaluation.expected + evaluation.actual)
   }
 }
