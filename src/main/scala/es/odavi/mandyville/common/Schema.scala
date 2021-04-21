@@ -48,6 +48,11 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
       querySchema[FPLGameweek]("fpl_gameweeks")
     }
 
+  def fplPlayersGameweeks: Quoted[EntityQuery[FPLPlayerGameweek]] =
+    quote {
+      querySchema[FPLPlayerGameweek]("fpl_players_gameweeks")
+    }
+
   def fplPositions: Quoted[EntityQuery[FPLPosition]] =
     quote {
       querySchema[FPLPosition]("fpl_positions")

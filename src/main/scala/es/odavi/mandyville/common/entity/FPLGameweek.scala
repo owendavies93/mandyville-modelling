@@ -17,6 +17,33 @@ case class FPLGameweek(
   deadline: DateTime
 )
 
+/** A player's performance in a given FPL gameweek
+  *
+  * @param playerId the ID of the player
+  * @param fplGameweekId the ID of the FPL Gameweek
+  * @param totalPoints the total FPL game points scored by the player
+  * @param bonusPoints the total bonus points scored (0, 1, 2, or 3)
+  * @param bps the BPS points accrued by the player
+  * @param value the in-game value of the player
+  * @param selected the number of people who have selected the player
+  * @param transfersIn the number of people who have bought the player
+  *                    this gameweek
+  * @param transfersOut the number of people who have sold the player
+  *                     this gamweweek
+  */
+case class FPLPlayerGameweek(
+  id: Int,
+  playerId: Int,
+  fplGameweekId: Int,
+  totalPoints: Short,
+  bonusPoints: Short,
+  bps: Short,
+  value: BigDecimal,
+  selected: Int,
+  transfersIn: Int,
+  transfersOut: Int
+)
+
 import PositionCategory._
 
 /** A position category in the Fantasy Premier League game
