@@ -7,7 +7,7 @@ import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
 
-class ModelSuite extends AnyFunSuite with MockitoSugar {
+class PredictorSuite extends AnyFunSuite with MockitoSugar {
   private val player = Player(1, "Owen", "Davies", 1, None, None, None)
   private val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
   private val context = Context(gameweek)
@@ -20,7 +20,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
   val assists: BigDecimal = 1.0
   val goals: BigDecimal = 1.0
 
-  class NoPlayModelStub extends Model(player, context, playerManager) {
+  class NoPlayPredictorStub extends Predictor(player, context, playerManager) {
     override def chanceOfRedCard() = 0
     override def chanceOfYellowCard() = 0.4
     override def expectedAssists(): BigDecimal = assists
@@ -31,12 +31,12 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
   test("Returns zero points for zero minutes") {
     assertResult(0) {
-      val noPlay = new NoPlayModelStub()
+      val noPlay = new NoPlayPredictorStub()
       noPlay.pointsForGameweek()
     }
   }
 
-  class Full90ModelStub extends NoPlayModelStub {
+  class Full90PredictorStub extends NoPlayPredictorStub {
     override def expectedMinutes() = 90
   }
 
@@ -48,12 +48,12 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
       assists * AssistPoints + goals * GoalPoints(Goalkeeper) - 1 - 0.4 + 2
 
     assertResult(expectedPoints) {
-      val full90 = new Full90ModelStub()
+      val full90 = new Full90PredictorStub()
       full90.pointsForGameweek()
     }
   }
 
-  class Full90CleanSheetModel extends Full90ModelStub {
+  class Full90CleanSheetPredictor extends Full90PredictorStub {
     override def expectedConceded() = 0.4
   }
 
@@ -65,12 +65,12 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
         CleanSheetPoints(Goalkeeper) - 0.4 + 2
 
     assertResult(expectedPoints) {
-      val cleanSheet = new Full90CleanSheetModel()
+      val cleanSheet = new Full90CleanSheetPredictor()
       cleanSheet.pointsForGameweek()
     }
   }
 
-  class SubModel extends NoPlayModelStub {
+  class SubPredictor extends NoPlayPredictorStub {
     override def expectedMinutes() = 15
   }
 
@@ -81,7 +81,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
       assists * AssistPoints + goals * GoalPoints(Goalkeeper) - 0.4 + 1
 
     assertResult(expectedPoints) {
-      val sub = new SubModel()
+      val sub = new SubPredictor()
       sub.pointsForGameweek()
     }
   }
@@ -91,8 +91,8 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
     when(dbService.getFPLPerformance(player, context))
       .thenReturn(List(actualPerformance))
 
-    val model = new Full90ModelStub()
-    val evaluation = model.comparePrediction()
+    val predictor = new Full90PredictorStub()
+    val evaluation = predictor.comparePrediction()
 
     assert(evaluation.difference < evaluation.expected + evaluation.actual)
   }

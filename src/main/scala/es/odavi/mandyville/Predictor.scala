@@ -5,14 +5,15 @@ import common.Comparison
 
 import scala.math.BigDecimal.RoundingMode
 
-/** The base predictive model, providing shared model functionality
-  * and an interface for all models.
+/** The base predictor providing shared predictor functionality
+  * and an interface for all predictors.
   *
-  * @constructor create a new model for a player in a context
-  * @param player the player we want to model
-  * @param context the context in which we are modelling
+  * @constructor create a new predictor for a player in a context
+  * @param player the player for whom we want to predict
+  * @param context the context in which we are predicting
+  * @param playerManager an instance of PlayerManager
   */
-abstract class Model(
+abstract class Predictor(
   player: Player,
   context: Context,
   playerManager: PlayerManager

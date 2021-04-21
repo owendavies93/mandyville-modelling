@@ -7,7 +7,7 @@ import mandyville.common.entity.PositionCategory._
   * football matches. It includes:
   *
   * <p><ul>
-  * <li> predictive models, based on the Model abstract class
+  * <li> predictive models, based on the Predictor abstract class
   * <li> encapsulation of the FPL rules
   * <li> prediction Context, defining the data that is permitted to be
   *      used in the prediction and the point in time for which we are

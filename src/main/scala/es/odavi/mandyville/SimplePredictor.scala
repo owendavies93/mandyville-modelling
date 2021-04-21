@@ -2,11 +2,19 @@ package es.odavi.mandyville
 
 import es.odavi.mandyville.common.entity.{Fixture, Player, PlayerFixture}
 
-class SimpleModel(
+/** A simple predictor which essentially takes the average of all
+  * relevant metrics in order to do naive predictions. A baseline for
+  * comparison against other predictors.
+  *
+  * @param player the player for whom we want to predict
+  * @param context the context in which we are predicting
+  * @param playerManager an instance of PlayerManager
+  */
+class SimplePredictor(
   player: Player,
   context: Context,
   playerManager: PlayerManager
-) extends Model(player, context, playerManager) {
+) extends Predictor(player, context, playerManager) {
 
   private var fixtures: Option[List[(PlayerFixture, Fixture)]] = None
 

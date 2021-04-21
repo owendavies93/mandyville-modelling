@@ -12,7 +12,7 @@ import org.mockito.MockitoSugar
 import org.scalatest.PrivateMethodTester
 import org.scalatest.funsuite.AnyFunSuite
 
-class SimpleModelSuite
+class SimplePredictorSuite
     extends AnyFunSuite
     with MockitoSugar
     with PrivateMethodTester {
@@ -47,65 +47,67 @@ class SimpleModelSuite
     val dbService = mock[PlayerDatabaseService]
     when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
 
-    val model = new SimpleModel(player, context, new PlayerManager(dbService))
-    val fixtures = model.invokePrivate(getFixtures())
+    val predictor =
+      new SimplePredictor(player, context, new PlayerManager(dbService))
+    val fixtures = predictor.invokePrivate(getFixtures())
 
     assert(fixtures.size == testFixtures.count { case (_, f) => f.hasDate })
   }
 
-  // Tests from here on in can share a context and model
+  // Tests from here on in can share a context and predictor
   val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
   val context = Context(gameweek)
 
   val dbService = mock[PlayerDatabaseService]
   when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
 
-  val model = new SimpleModel(player, context, new PlayerManager(dbService))
+  val predictor =
+    new SimplePredictor(player, context, new PlayerManager(dbService))
 
   test("getFixtures is cached") {
-    model.invokePrivate(getFixtures())
+    predictor.invokePrivate(getFixtures())
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
-    model.invokePrivate(getFixtures())
+    predictor.invokePrivate(getFixtures())
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
   }
 
   test("chanceOfRedCard returns a decimal between 0 and 1") {
-    val red = model.chanceOfRedCard()
+    val red = predictor.chanceOfRedCard()
     assert(red >= 0)
     assert(red <= 1)
   }
 
   test("chanceOfYellowCard returns a decimal between 0 and 1") {
-    val yellow = model.chanceOfYellowCard()
+    val yellow = predictor.chanceOfYellowCard()
     assert(yellow >= 0)
     assert(yellow <= 1)
   }
 
   test("goals, assists and conceded are all non-negative and non-zero") {
-    assert(model.expectedAssists() > 0)
-    assert(model.expectedGoals() > 0)
-    assert(model.expectedConceded() > 0)
+    assert(predictor.expectedAssists() > 0)
+    assert(predictor.expectedGoals() > 0)
+    assert(predictor.expectedConceded() > 0)
   }
 
   test("expectedMinutes returns a decimal between 0 and 90 inclusive") {
-    val mins = model.expectedMinutes()
+    val mins = predictor.expectedMinutes()
     assert(mins >= 0)
     assert(mins <= 90)
   }
 
   test("All calculations are pure functions") {
-    val red = model.chanceOfRedCard()
-    val yellow = model.chanceOfYellowCard()
-    val mins = model.expectedMinutes()
-    val conceded = model.expectedConceded()
-    val goals = model.expectedGoals()
-    val assists = model.expectedAssists()
+    val red = predictor.chanceOfRedCard()
+    val yellow = predictor.chanceOfYellowCard()
+    val mins = predictor.expectedMinutes()
+    val conceded = predictor.expectedConceded()
+    val goals = predictor.expectedGoals()
+    val assists = predictor.expectedAssists()
 
-    assert(red == model.chanceOfRedCard())
-    assert(yellow == model.chanceOfYellowCard())
-    assert(mins == model.expectedMinutes())
-    assert(conceded == model.expectedConceded())
-    assert(goals == model.expectedGoals())
-    assert(assists == model.expectedAssists())
+    assert(red == predictor.chanceOfRedCard())
+    assert(yellow == predictor.chanceOfYellowCard())
+    assert(mins == predictor.expectedMinutes())
+    assert(conceded == predictor.expectedConceded())
+    assert(goals == predictor.expectedGoals())
+    assert(assists == predictor.expectedAssists())
   }
 }
