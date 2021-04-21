@@ -25,7 +25,7 @@ class SimpleModelSuite
     (1 to 10).map(_ => getDummyFixtureInfo(playerId, teamId)).toList
 
   private val getFixtures =
-    PrivateMethod[List[(PlayerFixture, Fixture)]]('getFixtures)
+    PrivateMethod[List[(PlayerFixture, Fixture)]](Symbol("getFixtures"))
 
   test("All fixtures used for context after all fixtures") {
     // Find the last date in the generated set of dates, and then add
