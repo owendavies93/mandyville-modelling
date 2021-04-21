@@ -2,7 +2,7 @@ package es.odavi.mandyville.common.entity
 
 import com.github.nscala_time.time.Imports.DateTime
 
-/** A gamweek in the Fantasy Premier League game
+/** A gameweek in the Fantasy Premier League game
   *
   * @constructor create a gameweek with a season, gameweek number and
   *   deadline datetime
