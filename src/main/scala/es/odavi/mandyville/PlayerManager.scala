@@ -17,6 +17,8 @@ import es.odavi.mandyville.common.entity.{
 trait PlayerDatabaseService {
   def getAllFixturesForPlayer(player: Player): List[(PlayerFixture, Fixture)]
 
+  def getAllPlayersForSeason(season: Short): List[Player]
+
   def getFPLPerformance(
     player: Player,
     context: Context
@@ -38,6 +40,18 @@ private class PlayerDatabaseImp extends PlayerDatabaseService {
         .join(fixtures)
         .on(_.fixtureId == _.id)
         .filter { case (p, _) => p.playerId == lift(player.id) }
+    })
+
+  override def getAllPlayersForSeason(season: Short): List[Player] =
+    ctx.run(quote {
+      for {
+        p <- players.distinct
+        pg <- fplPlayersGameweeks.join(pg => pg.playerId == p.id)
+        g <-
+          fplGameweeks
+            .join(g => g.id == pg.fplGameweekId)
+            .filter(g => g.season == 2020)
+      } yield p
     })
 
   override def getFPLPerformance(
@@ -80,6 +94,14 @@ class PlayerManager(service: PlayerDatabaseService) {
     3 -> Midfielder,
     4 -> Forward
   )
+
+  /** Get all players that are active in the FPL game in a given
+    * season
+    *
+    * @param season the season we're interested in
+    */
+  def getAllPlayersForSeason(season: Short): List[Player] =
+    service.getAllPlayersForSeason(season)
 
   /** Get the actual in game performance for a player
     *
