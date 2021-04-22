@@ -68,4 +68,13 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
       thrown.getMessage === s"No performance for player #$id - $season GW$gw"
     )
   }
+
+  test("Returns correct set of players for season") {
+    when(dbService.getAllPlayersForSeason(season)).thenReturn(List(player))
+
+    val players = new PlayerManager(dbService).getAllPlayersForSeason(season)
+
+    assert(players.size === 1)
+    assert(players.head === player)
+  }
 }
