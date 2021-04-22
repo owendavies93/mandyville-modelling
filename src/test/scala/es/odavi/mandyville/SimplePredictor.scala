@@ -7,10 +7,11 @@ import es.odavi.mandyville.common.entity.{
   Player,
   PlayerFixture
 }
-import org.joda.time.{DateTime, DurationFieldType, LocalDate}
 import org.mockito.MockitoSugar
 import org.scalatest.PrivateMethodTester
 import org.scalatest.funsuite.AnyFunSuite
+
+import java.time.{LocalDate, LocalDateTime}
 
 class SimplePredictorSuite
     extends AnyFunSuite
@@ -37,11 +38,11 @@ class SimplePredictorSuite
       ._2
       .fixtureDate
       .get
-      .withFieldAdded(DurationFieldType.days(), 1)
+      .plusDays(1)
 
     val season = date.getYear.toShort
 
-    val gameweek = FPLGameweek(1, season, 1, date.toDateTimeAtStartOfDay)
+    val gameweek = FPLGameweek(1, season, 1, date.atStartOfDay())
     val context = Context(gameweek)
 
     val dbService = mock[PlayerDatabaseService]
@@ -55,7 +56,7 @@ class SimplePredictorSuite
   }
 
   // Tests from here on in can share a context and predictor
-  val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
+  val gameweek = FPLGameweek(1, 2020, 1, LocalDateTime.now())
   val context = Context(gameweek)
 
   val dbService = mock[PlayerDatabaseService]

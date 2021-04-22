@@ -3,9 +3,10 @@ package es.odavi.mandyville
 import es.odavi.mandyville.TestUtils.{getDummyFixtureInfo, getDummyPerformance}
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
 import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
-import org.joda.time.LocalDate
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
+
+import java.time.LocalDate
 
 class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
   private val dbService = mock[PlayerDatabaseService]
@@ -16,7 +17,7 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
   private val seasonInfo = FPLSeasonInfo(1, 1, season, 1, goalkeeperId)
   private val player = Player(playerId, "Owen", "Davies", 1, None, None, None)
   private val today = LocalDate.parse("2020-01-01")
-  private val gameweek = FPLGameweek(1, season, 1, today.toDateTimeAtStartOfDay)
+  private val gameweek = FPLGameweek(1, season, 1, today.atStartOfDay())
   private val context = Context(gameweek)
 
   when(dbService.getSeasonInfoForPlayer(player, context)).thenReturn(seasonInfo)

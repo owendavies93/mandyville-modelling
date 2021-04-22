@@ -1,15 +1,16 @@
 package es.odavi.mandyville
 
-import com.github.nscala_time.time.Imports.DateTime
 import es.odavi.mandyville.TestUtils.getDummyPerformance
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
 import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
 
+import java.time.LocalDateTime
+
 class PredictorSuite extends AnyFunSuite with MockitoSugar {
   private val player = Player(1, "Owen", "Davies", 1, None, None, None)
-  private val gameweek = FPLGameweek(1, 2020, 1, DateTime.now())
+  private val gameweek = FPLGameweek(1, 2020, 1, LocalDateTime.now())
   private val context = Context(gameweek)
   private val dbService = mock[PlayerDatabaseService]
   private val seasonInfo = FPLSeasonInfo(1, 1, 2020, 1, 1)

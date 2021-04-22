@@ -1,6 +1,5 @@
 package es.odavi.mandyville
 
-import com.github.nscala_time.time.Imports.{richReadableInstant, DateTime}
 import es.odavi.mandyville.common.entity.PositionCategory._
 import es.odavi.mandyville.common.entity.{
   FPLPlayerGameweek,
@@ -153,7 +152,7 @@ class PlayerManager(service: PlayerDatabaseService) {
     context: Context
   ): List[(PlayerFixture, Fixture)] = {
     val allFixtures = service.getAllFixturesForPlayer(player)
-    val deadline = context.gameweek.deadline.withTimeAtStartOfDay()
+    val deadline = context.gameweek.deadline.toLocalDate
     allFixtures
       .filter({
         case (_, fixture) => fixture.hasDate
@@ -161,8 +160,7 @@ class PlayerManager(service: PlayerDatabaseService) {
       .filter({
         case (_, fixture) =>
           val date = fixture.fixtureDate.get
-          val fixtureDt: DateTime = date.toDateTimeAtStartOfDay
-          fixtureDt < deadline
+          date.compareTo(deadline) < 0
       })
   }
 }

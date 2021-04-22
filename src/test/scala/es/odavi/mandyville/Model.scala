@@ -2,9 +2,10 @@ package es.odavi.mandyville
 
 import es.odavi.mandyville.TestUtils.{getDummyPerformance, randomBigDecimal}
 import es.odavi.mandyville.common.entity.{FPLGameweek, Player}
-import org.joda.time.DateTime
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
+
+import java.time.LocalDateTime
 
 class ModelSuite extends AnyFunSuite with MockitoSugar {
   private val playerId = 1
@@ -14,7 +15,9 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
   private val player2 =
     Player(playerId + 1, "Test2", "Test2", 1, None, None, Some(2))
-  private val gameweek = FPLGameweek(gw, season, gw.toShort, DateTime.now())
+
+  private val gameweek =
+    FPLGameweek(gw, season, gw.toShort, LocalDateTime.now())
   private val context = Context(gameweek)
 
   private val dbService = mock[PlayerDatabaseService]

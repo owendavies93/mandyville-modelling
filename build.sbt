@@ -21,9 +21,6 @@ val quill = Seq(
 val pgVersion = "42.2.19"
 val pg = "org.postgresql" % "postgresql" % pgVersion
 
-val timeVersion = "2.26.0"
-val nscalaTime = "com.github.nscala-time" %% "nscala-time" % timeVersion
-
 lazy val settings = (project in file("."))
   .settings(
     name := "Mandyville Modelling",
@@ -32,6 +29,5 @@ lazy val settings = (project in file("."))
     libraryDependencies += mockito   % Test,
     libraryDependencies ++= quill,
     libraryDependencies += pg,
-    libraryDependencies += nscalaTime,
     scalacOptions ++= Seq("-deprecation", "-feature")
   )

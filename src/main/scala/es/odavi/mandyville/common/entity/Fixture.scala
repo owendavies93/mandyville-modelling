@@ -1,7 +1,6 @@
 package es.odavi.mandyville.common.entity
 
-import org.joda.time.LocalDate
-
+import java.time.LocalDate
 import scala.math.BigDecimal
 
 /** A football fixture

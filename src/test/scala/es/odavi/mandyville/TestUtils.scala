@@ -1,13 +1,12 @@
 package es.odavi.mandyville
 
-import com.github.nscala_time.time.Imports.DateTime
 import es.odavi.mandyville.common.entity.{
   FPLPlayerGameweek,
   Fixture,
   PlayerFixture
 }
-import org.joda.time.{DateTime, LocalDate}
 
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import scala.util.Random
 
 /** Provides utility methods for testing, mostly for generating test
@@ -110,14 +109,14 @@ object TestUtils {
   // Fix some start and end periods for plausible fixture dates and
   // pick a random date between that period
   private def randomDate: LocalDate = {
-    val start = new LocalDate(2016, 8, 1)
-    val end = new LocalDate(2021, 7, 1)
+    val start = LocalDate.of(2016, 8, 1)
+    val end = LocalDate.of(2021, 7, 1)
 
     val random = Random.between(
-      start.toDateTimeAtStartOfDay.getMillis(),
-      end.toDateTimeAtStartOfDay.getMillis()
+      start.atStartOfDay().toEpochSecond(ZoneOffset.UTC),
+      end.atStartOfDay().toEpochSecond(ZoneOffset.UTC)
     )
-    new DateTime(random).toLocalDate
+    LocalDateTime.ofEpochSecond(random, 0, ZoneOffset.UTC).toLocalDate
   }
 
   private def randomShort: Short = Random.between(0, 10).toShort

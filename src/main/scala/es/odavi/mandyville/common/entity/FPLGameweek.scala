@@ -1,6 +1,6 @@
 package es.odavi.mandyville.common.entity
 
-import com.github.nscala_time.time.Imports.DateTime
+import java.time.LocalDateTime
 
 /** A gameweek in the Fantasy Premier League game
   *
@@ -14,7 +14,7 @@ case class FPLGameweek(
   id: Int,
   season: Short,
   gameweek: Short,
-  deadline: DateTime
+  deadline: LocalDateTime
 )
 
 /** A player's performance in a given FPL gameweek
