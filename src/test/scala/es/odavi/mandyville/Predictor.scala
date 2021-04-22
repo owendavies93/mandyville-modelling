@@ -94,6 +94,6 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
     val predictor = new Full90PredictorStub()
     val evaluation = predictor.comparePrediction()
 
-    assert(evaluation.difference < evaluation.expected + evaluation.actual)
+    assert(evaluation.difference <= evaluation.expected + evaluation.actual)
   }
 }
