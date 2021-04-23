@@ -1,0 +1,3 @@
+[submodule "src/it/resources/meta"]
+	path = src/it/resources/meta
+	url = git@github.com:sirgraystar/mandyville-meta.git
