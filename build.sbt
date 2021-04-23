@@ -27,14 +27,20 @@ val dockerIt = Seq(
   "com.whisk" %% "docker-testkit-impl-docker-java"
 ).map(_ % dIVersion)
 
+val flywayVersion = "7.8.1"
+val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
+
 lazy val settings = (project in file("."))
+  .configs(IntegrationTest)
   .settings(
     name := "Mandyville Modelling",
+    Defaults.itSettings,
     libraryDependencies += scalaTic,
-    libraryDependencies += scalaTest % Test,
+    libraryDependencies += scalaTest % "it,test",
     libraryDependencies += mockito   % Test,
     libraryDependencies ++= quill,
     libraryDependencies += pg,
     libraryDependencies ++= dockerIt,
+    libraryDependencies += flyway,
     scalacOptions ++= Seq("-deprecation", "-feature"),
   )
