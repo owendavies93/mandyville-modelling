@@ -21,6 +21,12 @@ val quill = Seq(
 val pgVersion = "42.2.19"
 val pg = "org.postgresql" % "postgresql" % pgVersion
 
+val dIVersion = "0.9.9"
+val dockerIt = Seq(
+  "com.whisk" %% "docker-testkit-scalatest",
+  "com.whisk" %% "docker-testkit-impl-docker-java"
+).map(_ % dIVersion)
+
 lazy val settings = (project in file("."))
   .settings(
     name := "Mandyville Modelling",
@@ -29,5 +35,6 @@ lazy val settings = (project in file("."))
     libraryDependencies += mockito   % Test,
     libraryDependencies ++= quill,
     libraryDependencies += pg,
-    scalacOptions ++= Seq("-deprecation", "-feature")
+    libraryDependencies ++= dockerIt,
+    scalacOptions ++= Seq("-deprecation", "-feature"),
   )
