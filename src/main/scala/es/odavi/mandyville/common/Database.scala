@@ -3,6 +3,7 @@ package es.odavi.mandyville.common
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import com.whisk.docker._
 import org.postgresql.ds.PGSimpleDataSource
+import org.flywaydb.core.Flyway
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 
 import java.sql.DriverManager
@@ -119,4 +120,24 @@ trait TestPostgresDatabase extends DockerKit with DatabaseConfig {
     */
   abstract override def dockerContainers: List[DockerContainer] =
     postgresContainer :: super.dockerContainers
+}
+
+/** A trait that defines the configuration for Flyway migrations, to be
+  * used in integration tests.
+  */
+trait FlywayConfig {
+
+  /** Define the configuration and set the various options required to
+    * load migration files from the submodule defined the the resources
+    * folder.
+    *
+    * @return an instance of Flyway
+    */
+  def flyway: Flyway =
+    Flyway
+      .configure()
+      .sqlMigrationPrefix("")
+      .sqlMigrationSeparator("_")
+      .locations("meta")
+      .load()
 }
