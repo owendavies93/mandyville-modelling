@@ -32,7 +32,9 @@ private class GameweekDatabaseImp extends GameweekDatabaseService {
   *
   * @param service an implementation of GameweekDatabaseService
   */
-class GameweekManager(service: GameweekDatabaseService) {
+class GameweekManager(
+  service: GameweekDatabaseService = new GameweekDatabaseImp
+) {
 
   /** Get the gameweek stored in the database associated with the given
     * season and gameweek number

@@ -83,7 +83,7 @@ private class PlayerDatabaseImp extends PlayerDatabaseService {
 /** Provides methods for managing players and fetching information
   * about them from the mandyville database
   */
-class PlayerManager(service: PlayerDatabaseService) {
+class PlayerManager(service: PlayerDatabaseService = new PlayerDatabaseImp) {
 
   // TODO: Remove this once the position category decoding is
   //       worked out
