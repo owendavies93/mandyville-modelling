@@ -24,7 +24,7 @@ val pg = "org.postgresql" % "postgresql" % pgVersion
 val dIVersion = "0.9.9"
 val dockerIt = Seq(
   "com.whisk" %% "docker-testkit-scalatest",
-  "com.whisk" %% "docker-testkit-impl-docker-java"
+  "com.whisk" %% "docker-testkit-impl-spotify"
 ).map(_ % dIVersion)
 
 val flywayVersion = "7.8.1"
