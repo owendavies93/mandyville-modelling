@@ -77,8 +77,8 @@ class PostgresReadyChecker(
   ): Future[Boolean] =
     container
       .getPorts()
-      .map(ports => {
-        val portToUse = if(port.isDefined) port.get else ports.values.head
+      .map { ports =>
+        val portToUse = if (port.isDefined) port.get else ports.values.head
         Try {
           Class.forName("org.postgresql.Driver")
           val url =
@@ -87,7 +87,7 @@ class PostgresReadyChecker(
             .map(_.close)
             .isDefined
         }.getOrElse(false)
-      })
+      }
 }
 
 /** A trait to create a docker container that contains a postgres
@@ -95,7 +95,7 @@ class PostgresReadyChecker(
   * containers that DockerKit will pull in.
   */
 trait TestPostgresDatabase extends DockerKit with DatabaseConfig {
-  def PostgresAdvertisedPort = config.getInt("database.port")
+  def PostgresAdvertisedPort: Int = config.getInt("database.port")
   def PostgresExposedPort = 44444
   def ConnectionRetries = 15
 
