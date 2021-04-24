@@ -30,6 +30,8 @@ val dockerIt = Seq(
 val flywayVersion = "7.8.1"
 val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
 
+envVars in IntegrationTest := Map("DOCKER_HOST" -> "unix:///var/run/docker.sock")
+
 lazy val settings = (project in file("."))
   .configs(IntegrationTest)
   .settings(
@@ -42,5 +44,6 @@ lazy val settings = (project in file("."))
     libraryDependencies += pg,
     libraryDependencies ++= dockerIt,
     libraryDependencies += flyway,
+    libraryDependencies += "com.sun.activation" % "javax.activation" % "1.2.0",
     scalacOptions ++= Seq("-deprecation", "-feature"),
   )
