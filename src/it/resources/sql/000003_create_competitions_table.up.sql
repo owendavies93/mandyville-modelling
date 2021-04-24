@@ -1,0 +1,1 @@
+../meta/migrations/000003_create_competitions_table.up.sql

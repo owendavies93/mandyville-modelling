@@ -1,0 +1,1 @@
+../meta/migrations/000020_add_team_alternate_names.up.sql

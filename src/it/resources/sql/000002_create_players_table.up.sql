@@ -1,0 +1,1 @@
+../meta/migrations/000002_create_players_table.up.sql

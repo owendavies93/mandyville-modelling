@@ -148,5 +148,5 @@ trait FlywayConfig {
       .configure()
       .sqlMigrationPrefix("")
       .sqlMigrationSeparator("_")
-      .locations("meta")
+      .locations("sql")
 }

@@ -1,0 +1,1 @@
+../meta/migrations/000005_create_country_alternate_names_table.up.sql
