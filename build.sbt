@@ -57,3 +57,5 @@ lazy val settings = (project in file("."))
     libraryDependencies += "com.sun.activation" % "javax.activation" % "1.2.0",
     scalacOptions ++= Seq("-deprecation", "-feature"),
   )
+
+inConfig(IntegrationTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings)
