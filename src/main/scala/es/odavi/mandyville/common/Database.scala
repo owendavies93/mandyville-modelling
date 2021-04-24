@@ -5,8 +5,10 @@ import com.whisk.docker._
 import org.postgresql.ds.PGSimpleDataSource
 import org.flywaydb.core.Flyway
 import io.getquill.{PostgresJdbcContext, SnakeCase}
+import org.flywaydb.core.api.configuration.FluentConfiguration
 
 import java.sql.DriverManager
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -41,7 +43,7 @@ trait DatabaseConfig {
   * database.
   *
   * Generally, you'll need to import Database.ctx and Database.ctx._
-  * to contruct queries and the run queries with ctx.run()
+  * to construct queries and the run queries with ctx.run()
   */
 object Database extends DatabaseConfig {
   // These connection options are too small scale for production use,
@@ -59,16 +61,14 @@ object Database extends DatabaseConfig {
   * postgres docker container to spin up. Cribbed from the
   * docker-it-scala examples.
   *
-  * @param url the DB url
   * @param user the DB user
   * @param password the DB password
-  * @param driver the DB driver class, as a String
+  * @param port the advertised port for the database
   */
 class PostgresReadyChecker(
-  url: String,
   user: String,
   password: String,
-  driver: String
+  port: Option[Int] = None
 ) extends DockerReadyChecker {
 
   override def apply(container: DockerContainerState)(implicit
@@ -77,14 +77,17 @@ class PostgresReadyChecker(
   ): Future[Boolean] =
     container
       .getPorts()
-      .map(_ =>
+      .map(ports => {
+        val portToUse = if(port.isDefined) port.get else ports.values.head
         Try {
-          Class.forName(driver)
+          Class.forName("org.postgresql.Driver")
+          val url =
+            s"jdbc:postgresql://${docker.host}:$portToUse/"
           Option(DriverManager.getConnection(url, user, password))
             .map(_.close)
             .isDefined
         }.getOrElse(false)
-      )
+      })
 }
 
 /** A trait to create a docker container that contains a postgres
@@ -92,28 +95,35 @@ class PostgresReadyChecker(
   * containers that DockerKit will pull in.
   */
 trait TestPostgresDatabase extends DockerKit with DatabaseConfig {
-  def InternalPort: Int = 4444
+  def PostgresAdvertisedPort = config.getInt("database.port")
+  def PostgresExposedPort = 44444
+  def ConnectionRetries = 15
 
-  val externalPort: Int = config.getInt("database.port")
-  val user: String = config.getString("database.user")
-  val password: String = config.getString("database.password")
-  val database: String = config.getString("database.database")
+  val dbUser: String = config.getString("database.user")
+  val dbPassword: String = config.getString("database.password")
+  val dbName: String = config.getString("database.database")
+  val dbHost: String = config.getString("database.host")
 
   val dbUrl =
-    s"jdbc:postgresql://localhost:$externalPort/$database?autoReconnect=true&useSSL=false"
+    s"jdbc:postgresql://$dbHost:$PostgresExposedPort/$dbName"
   val driver: String = "org.postgresql.Driver"
   val dockerImage = "postgres:13.2"
 
   val postgresContainer: DockerContainer = DockerContainer(dockerImage)
-    .withPorts((externalPort, Some(InternalPort)))
+    .withPorts((PostgresAdvertisedPort, Some(PostgresExposedPort)))
     .withEnv(
-      s"POSTGRES_USER=$user",
-      s"POSTGRES_PASSWORD=$password",
-      s"POSTGRES_DB=$database"
+      s"POSTGRES_USER=$dbUser",
+      s"POSTGRES_PASSWORD=$dbPassword",
+      s"POSTGRES_DB=$dbName"
     )
     .withReadyChecker(
-      new PostgresReadyChecker(dbUrl, user, password, driver)
+      new PostgresReadyChecker(dbUser, dbPassword, Some(PostgresExposedPort))
+        .looped(ConnectionRetries, 1.second)
     )
+
+  // Override this to give ourselves extra time to pull the images on
+  // slow connections on the first run.
+  override val PullImagesTimeout: FiniteDuration = 10.minutes
 
   /** The list of docker containers from the parent class, plus our new
     * postgres container.
@@ -131,13 +141,12 @@ trait FlywayConfig {
     * load migration files from the submodule defined the the resources
     * folder.
     *
-    * @return an instance of Flyway
+    * @return an instance of Flyway's FluentConfiguration
     */
-  def flyway: Flyway =
+  def flyway: FluentConfiguration =
     Flyway
       .configure()
       .sqlMigrationPrefix("")
       .sqlMigrationSeparator("_")
       .locations("meta")
-      .load()
 }

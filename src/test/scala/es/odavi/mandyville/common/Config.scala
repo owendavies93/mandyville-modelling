@@ -7,7 +7,7 @@ class ConfigSuite extends AnyFunSuite {
   test("Default environment is development") {
     val conf = Config()
 
-    assertResult("localhost") {
+    assertResult("0.0.0.0") {
       conf.getString("database.host")
     }
   }
