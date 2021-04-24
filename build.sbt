@@ -30,7 +30,15 @@ val dockerIt = Seq(
 val flywayVersion = "7.8.1"
 val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
 
-envVars in IntegrationTest := Map("DOCKER_HOST" -> "unix:///var/run/docker.sock")
+val sLVersion = "3.9.3"
+val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % sLVersion
+
+val logbackVersion = "1.2.3"
+val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+
+envVars in IntegrationTest := Map(
+  "DOCKER_HOST" -> "unix:///var/run/docker.sock"
+)
 
 lazy val settings = (project in file("."))
   .configs(IntegrationTest)
@@ -44,6 +52,8 @@ lazy val settings = (project in file("."))
     libraryDependencies += pg,
     libraryDependencies ++= dockerIt,
     libraryDependencies += flyway,
+    libraryDependencies += scalaLogging,
+    libraryDependencies += logback,
     libraryDependencies += "com.sun.activation" % "javax.activation" % "1.2.0",
     scalacOptions ++= Seq("-deprecation", "-feature"),
   )
