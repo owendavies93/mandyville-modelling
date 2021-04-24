@@ -13,15 +13,39 @@ and runs against the database schema produced by the migrations in
 [mandyville-meta](https://github.com/sirgraystar/mandyville-meta).
 
 ### Goals
-  * Extensible and flexbile player predictions
+  * Extensible and flexible player predictions
   * Predictions within a given time context
   * Model comparison and evaluation against actual results
 
 ### Requirements
-  * `sbt`
-  * Scala 2.13.0
+  * [`sbt`](https://github.com/sbt/sbt)
+  * Scala 2.13.0 - the code is written with newer versions in mind, but some
+    dependencies are still stuck on this version. scala-steward is set up
+    to monitor this
+  * docker, for integration testing
+  * PostgreSQL 13.2 - older versions will probably work fine as well, but this
+    is the version we use
 
 ### Testing
 
+#### Unit Tests
+
 Just run `sbt test`. You can run `sbt coverageReport` to get a
 coverage report if you so wish.
+
+#### Integration Tests
+
+We use [`docker-it-scala`](https://github.com/whisklabs/docker-it-scala) to
+run integration tests against a local PostgreSQL database. You can run these
+tests with `sbt it:test`. The configuration should work pretty much out of the
+box - you can make changes to the development database configuration in
+[development.conf](/src/main/resources/development.conf). The database is
+populated by [Flyway](https://github.com/flyway/flyway/) using the migrations
+from [`meta`](https://github.com/sirgraystar/mandyville-meta).
+
+You can run all tests, with coverage, and generating a report, with the
+following command:
+
+```bash
+sbt clean coverage test it:test coverageReport
+```
