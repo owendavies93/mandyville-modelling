@@ -16,11 +16,9 @@ jobs:
       with:
         java-version: adopt@1.11
     - name: Run tests with coverage
-      run: sbt clean coverage test
-    - name: Coverage report
-      run: sbt coverageReport
+      run: sbt clean coverage test it:test coverageReport
     - name: Format check
-      run: sbt scalafmtCheck test:scalafmtCheck
+      run: sbt scalafmtCheck test:scalafmtCheck it:scalafmtCheck
     - name: Upload to Codecov
       uses: codecov/codecov-action@v1
       with:
