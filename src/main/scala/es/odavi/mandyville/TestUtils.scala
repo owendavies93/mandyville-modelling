@@ -1,8 +1,10 @@
 package es.odavi.mandyville
 
 import es.odavi.mandyville.common.entity.{
+  Country,
   FPLPlayerGameweek,
   Fixture,
+  Player,
   PlayerFixture
 }
 
@@ -29,6 +31,8 @@ object TestUtils {
   def getDummyFixtureInfo(
     playerId: Int,
     teamId: Int,
+    otherTeamId: Int = randomInt,
+    competitionId: Int = randomInt,
     date: Option[LocalDate] = maybeDate,
     season: Short = 2020,
     yellow: Boolean = false,
@@ -59,9 +63,9 @@ object TestUtils {
       ),
       Fixture(
         fixtureId,
-        0,
+        competitionId,
         teamId,
-        1,
+        otherTeamId,
         season,
         Option(teamId),
         maybeShort,
@@ -90,12 +94,29 @@ object TestUtils {
       randomInt
     )
 
+  /** Generates a dummy Player
+    *
+    * @param playerId the ID to use for the player
+    */
+  def getDummyPlayer(playerId: Int, countryId: Int = randomInt): Player =
+    Player(
+      playerId,
+      randomString,
+      randomString,
+      countryId,
+      maybeInt,
+      maybeInt,
+      maybeInt
+    )
+
   private def maybe[T](thing: T): Option[T] =
     if (Random.nextFloat() < 0.1) None else Option(thing)
 
   private def maybeBigDecimal: Option[BigDecimal] = maybe(randomBigDecimal)
 
   private def maybeDate: Option[LocalDate] = maybe(randomDate)
+
+  private def maybeInt: Option[Int] = maybe(randomInt)
 
   private def maybeShort: Option[Short] = maybe(randomShort)
 
@@ -120,4 +141,6 @@ object TestUtils {
   }
 
   private def randomShort: Short = Random.between(0, 10).toShort
+
+  private def randomString: String = Random.nextString(10)
 }
