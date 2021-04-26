@@ -59,3 +59,5 @@ lazy val settings = (project in file("."))
   )
 
 inConfig(IntegrationTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings)
+
+parallelExecution in IntegrationTest := false
