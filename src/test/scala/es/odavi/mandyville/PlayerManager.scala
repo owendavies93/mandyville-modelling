@@ -35,7 +35,7 @@ class PlayerManagerSuite extends AnyFunSuite with MockitoSugar {
     val date =
       if (dateString.isDefined) Option(LocalDate.parse(dateString.get))
       else None
-    getDummyFixtureInfo(playerId, 10, date, season)
+    getDummyFixtureInfo(playerId, 10, 11, 1, date, season)
   }
 
   when(dbService.getAllFixturesForPlayer(player)).thenReturn(fixtureInfo)
