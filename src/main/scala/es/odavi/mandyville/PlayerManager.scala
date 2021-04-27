@@ -1,14 +1,9 @@
 package es.odavi.mandyville
 
+import es.odavi.mandyville.common.{Database, Schema}
 import es.odavi.mandyville.common.entity.PositionCategory._
-import es.odavi.mandyville.common.entity.{
-  FPLPlayerGameweek,
-  FPLSeasonInfo,
-  Fixture,
-  Player,
-  PlayerFixture,
-  PositionCategory
-}
+import es.odavi.mandyville.common.entity._
+import io.getquill.{PostgresJdbcContext, SnakeCase}
 
 /** A generic interface for interacting with a quill context for
   * player related tasks
@@ -29,9 +24,10 @@ trait PlayerDatabaseService {
 /** An implementation of PlayerDatabaseService using common.Database
   * to fetch information from the mandyville database
   */
-private class PlayerDatabaseImp extends PlayerDatabaseService {
-  import es.odavi.mandyville.common.Database.ctx
-  import es.odavi.mandyville.common.Database.ctx._
+class PlayerDatabaseImp(
+  ctx: PostgresJdbcContext[SnakeCase] with Schema = Database.ctx
+) extends PlayerDatabaseService {
+  import ctx._
 
   def getAllFixturesForPlayer(player: Player): List[(PlayerFixture, Fixture)] =
     ctx.run(quote {
