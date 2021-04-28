@@ -6,14 +6,13 @@ import com.whisk.docker.impl.spotify.SpotifyDockerFactory
 import com.whisk.docker.scalatest.DockerTestKit
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import es.odavi.mandyville.TestUtils.{getDummyFixtureInfo, getDummyPlayer}
-import es.odavi.mandyville.common.entity.{
-  Competition,
-  Country,
-  FPLGameweek,
-  PlayerFixture,
-  Team
+import es.odavi.mandyville.common.entity._
+import es.odavi.mandyville.common.{
+  FlywayConfig,
+  InsertSchema,
+  Schema,
+  TestPostgresDatabase
 }
-import es.odavi.mandyville.common.{FlywayConfig, Schema, TestPostgresDatabase}
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 import org.scalatest.Outcome
 import org.scalatest.funsuite.FixtureAnyFunSuite
@@ -30,7 +29,7 @@ class PlayerDatabaseServiceSuite
   override implicit def dockerFactory: DockerFactory =
     new SpotifyDockerFactory(client)
 
-  case class FixtureParam(ctx: PostgresJdbcContext[SnakeCase] with Schema)
+  case class FixtureParam(ctx: PostgresJdbcContext[SnakeCase] with InsertSchema)
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val fixtureConfig = new HikariConfig()
@@ -44,7 +43,7 @@ class PlayerDatabaseServiceSuite
     migrations.migrate()
 
     val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource)
-      with Schema
+      with InsertSchema
 
     withFixture(test.toNoArgTest(FixtureParam(ctx)))
   }
@@ -75,14 +74,12 @@ class PlayerDatabaseServiceSuite
 
     ctx.run(insertPlayerFixture(pf2))
 
-    /*
     val gameweek = FPLGameweek(1, 2020, 1, LocalDateTime.now())
     val context = Context(gameweek)
-    val manager = new PlayerManager
+    val manager = new PlayerManager(new PlayerDatabaseImp(ctx))
     val relevantFixtures = manager.getRelevantFixtures(player, context)
 
     assert(relevantFixtures.size === 1)
-    assert(relevantFixtures.head._2.id === f.id)
-     */
+    assert(relevantFixtures.head._2.id === fId)
   }
 }
