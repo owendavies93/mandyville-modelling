@@ -23,6 +23,7 @@ trait PlayerDatabaseService {
 
 /** An implementation of PlayerDatabaseService using common.Database
   * to fetch information from the mandyville database
+  * TODO: proper scaladoc
   */
 class PlayerDatabaseImp(
   ctx: PostgresJdbcContext[SnakeCase] with Schema = Database.ctx

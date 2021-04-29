@@ -10,7 +10,6 @@ import es.odavi.mandyville.common.entity._
 import es.odavi.mandyville.common.{
   FlywayConfig,
   InsertSchema,
-  Schema,
   TestPostgresDatabase
 }
 import io.getquill.{PostgresJdbcContext, SnakeCase}
@@ -29,7 +28,11 @@ class PlayerDatabaseServiceSuite
   override implicit def dockerFactory: DockerFactory =
     new SpotifyDockerFactory(client)
 
-  case class FixtureParam(ctx: PostgresJdbcContext[SnakeCase] with InsertSchema)
+  case class FixtureParam(
+    ctx: PostgresJdbcContext[SnakeCase] with InsertSchema,
+    player: Player,
+    competition: Competition
+  )
 
   override protected def withFixture(test: OneArgTest): Outcome = {
     val fixtureConfig = new HikariConfig()
@@ -45,27 +48,35 @@ class PlayerDatabaseServiceSuite
     val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource)
       with InsertSchema
 
-    withFixture(test.toNoArgTest(FixtureParam(ctx)))
+    import ctx._
+
+    val playerId = 1
+    val country = Country(1, "Test", "TT")
+    val player = getDummyPlayer(playerId, country.id)
+    val comp = Competition(1, "Test", country.id, Some(1), Some(1))
+    ctx.run(insertCountry(country))
+    ctx.run(insertCompetition(comp))
+    ctx.run(insertPlayer(player))
+
+    withFixture(test.toNoArgTest(FixtureParam(ctx, player, comp)))
   }
 
   test("Returns correct fixtures for player") { fixture =>
     import fixture.ctx
     import fixture.ctx._
 
-    val playerId = 1
     val playerTeam = Team(1, "Test", 1)
     val otherTeam = Team(2, "Test", 2)
-    val country = Country(1, "Test", "TT")
-    val player = getDummyPlayer(playerId, country.id)
-    val comp = Competition(1, "Test", country.id, Some(1), Some(1))
     val (pf, f) =
-      getDummyFixtureInfo(playerId, playerTeam.id, otherTeam.id, comp.id)
+      getDummyFixtureInfo(
+        fixture.player.id,
+        playerTeam.id,
+        otherTeam.id,
+        fixture.competition.id
+      )
 
-    ctx.run(insertCountry(country))
-    ctx.run(insertCompetition(comp))
     ctx.run(insertTeam(playerTeam))
     ctx.run(insertTeam(otherTeam))
-    ctx.run(insertPlayer(player))
 
     // TODO: Is there a nicer way of doing this? Possibly separating
     //       out the generation of dummy PlayerFixture and Fixture
@@ -77,7 +88,7 @@ class PlayerDatabaseServiceSuite
     val gameweek = FPLGameweek(1, 2020, 1, LocalDateTime.now())
     val context = Context(gameweek)
     val manager = new PlayerManager(new PlayerDatabaseImp(ctx))
-    val relevantFixtures = manager.getRelevantFixtures(player, context)
+    val relevantFixtures = manager.getRelevantFixtures(fixture.player, context)
 
     assert(relevantFixtures.size === 1)
     assert(relevantFixtures.head._2.id === fId)
