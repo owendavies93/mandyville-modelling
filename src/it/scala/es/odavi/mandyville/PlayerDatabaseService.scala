@@ -93,4 +93,26 @@ class PlayerDatabaseServiceSuite
     assert(relevantFixtures.size === 1)
     assert(relevantFixtures.head._2.id === fId)
   }
+
+  test("Returns correct FPL position for player") { fixture =>
+    import fixture.ctx
+    import fixture.ctx._
+
+    val season: Short = 2020
+    val fplPositionId: Short = 1
+    val seasonInfo =
+      FPLSeasonInfo(1, fixture.player.id, season, 1, fplPositionId)
+    val fplPosition = FPLPosition(1, fplPositionId, PositionCategory.Goalkeeper)
+    val gameweek = FPLGameweek(1, season, 1, LocalDateTime.now())
+    val context = Context(gameweek)
+
+    ctx.run(insertFPLPosition(fplPosition))
+    ctx.run(insertFPLSeasonInfo(seasonInfo))
+
+    val manager = new PlayerManager(new PlayerDatabaseImp(ctx))
+
+    val position = manager.getPositionForPlayer(fixture.player, context)
+
+    assert(position === PositionCategory.Goalkeeper)
+  }
 }

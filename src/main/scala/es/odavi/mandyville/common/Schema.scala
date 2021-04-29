@@ -1,6 +1,7 @@
 package es.odavi.mandyville.common
 
 import entity._
+import es.odavi.mandyville.common.entity.PositionCategory.PositionCategory
 import io.getquill.{
   ActionReturning,
   EntityQuery,
@@ -21,9 +22,6 @@ import io.getquill.context.jdbc.JdbcContext
   * SnakeCase. This ensures that queries produced by mirror contexts
   * in tests are reflective of queries that are passed to the actual
   * database.
-  *
-  * This trait also provides decoders and encoders for custom types
-  * used in the mandyville database.
   */
 trait Schema { this: Context[PostgresDialect, SnakeCase] =>
 
@@ -95,6 +93,9 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
 
 /** This trait provides methods for inserting entities into
   * some collections. This is primarily for use in testing.
+  *
+  * This trait also provides decoders and encoders for custom types
+  * used in the mandyville database.
   */
 trait InsertSchema extends Schema {
   this: JdbcContext[PostgresDialect, SnakeCase] =>
@@ -118,6 +119,26 @@ trait InsertSchema extends Schema {
   def insertFixture(f: Fixture): Quoted[ActionReturning[Fixture, Index]] =
     quote {
       fixtures.insert(lift(f)).returningGenerated(_.id)
+    }
+
+  implicit val fplSeasonInfoInsertMeta = insertMeta[FPLSeasonInfo](_.id)
+
+  def insertFPLSeasonInfo(f: FPLSeasonInfo): Quoted[Insert[FPLSeasonInfo]] =
+    quote {
+      fplSeasonInfo.insert(lift(f))
+    }
+
+  implicit val fplPositionInsertMeta = insertMeta[FPLPosition](_.id)
+
+  implicit val positionCategoryEncoder: Encoder[PositionCategory] =
+    encoder(
+      java.sql.Types.VARCHAR,
+      (index, value, row) => row.setObject(index, value, java.sql.Types.OTHER)
+    )
+
+  def insertFPLPosition(f: FPLPosition): Quoted[Insert[FPLPosition]] =
+    quote {
+      fplPositions.insert(lift(f))
     }
 
   implicit val playerInsertMeta = insertMeta[Player](_.id)
