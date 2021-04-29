@@ -18,7 +18,10 @@ trait PlayerDatabaseService {
     context: Context
   ): List[FPLPlayerGameweek]
 
-  def getSeasonInfoForPlayer(player: Player, context: Context): FPLSeasonInfo
+  def getSeasonInfoForPlayer(
+    player: Player,
+    context: Context
+  ): (FPLSeasonInfo, FPLPosition)
 }
 
 /** An implementation of PlayerDatabaseService using common.Database
@@ -65,12 +68,16 @@ class PlayerDatabaseImp(
   def getSeasonInfoForPlayer(
     player: Player,
     context: Context
-  ): FPLSeasonInfo = {
+  ): (FPLSeasonInfo, FPLPosition) = {
     val season = context.gameweek.season
     val q = quote {
-      fplSeasonInfo.filter(f =>
-        f.playerId == lift(player.id) && f.season == lift(season)
-      )
+      fplSeasonInfo
+        .join(fplPositions)
+        .on(_.fplPositionsId == _.id)
+        .filter {
+          case (f, _) =>
+            f.playerId == lift(player.id) && f.season == lift(season)
+        }
     }
 
     ctx.run(q).head
@@ -81,15 +88,6 @@ class PlayerDatabaseImp(
   * about them from the mandyville database
   */
 class PlayerManager(service: PlayerDatabaseService = new PlayerDatabaseImp) {
-
-  // TODO: Remove this once the position category decoding is
-  //       worked out
-  val positionMap: Map[Int, PositionCategory.Value] = Map(
-    1 -> Goalkeeper,
-    2 -> Defender,
-    3 -> Midfielder,
-    4 -> Forward
-  )
 
   /** Get all players that are active in the FPL game in a given
     * season
@@ -131,10 +129,9 @@ class PlayerManager(service: PlayerDatabaseService = new PlayerDatabaseImp) {
   def getPositionForPlayer(
     player: Player,
     context: Context
-  ): PositionCategory.Value = {
+  ): PositionCategory = {
     val info = service.getSeasonInfoForPlayer(player, context)
-
-    positionMap(info.fplSeasonId)
+    info._2.elementType
   }
 
   /** Get the relevant set of fixtures for the player in the given

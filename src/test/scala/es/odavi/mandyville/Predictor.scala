@@ -2,7 +2,12 @@ package es.odavi.mandyville
 
 import es.odavi.mandyville.TestUtils.getDummyPerformance
 import es.odavi.mandyville.common.entity.PositionCategory.Goalkeeper
-import es.odavi.mandyville.common.entity.{FPLGameweek, FPLSeasonInfo, Player}
+import es.odavi.mandyville.common.entity.{
+  FPLGameweek,
+  FPLPosition,
+  FPLSeasonInfo,
+  Player
+}
 import org.mockito.MockitoSugar
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -14,8 +19,10 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
   private val context = Context(gameweek)
   private val dbService = mock[PlayerDatabaseService]
   private val seasonInfo = FPLSeasonInfo(1, 1, 2020, 1, 1)
+  private val position = FPLPosition(1, 1, Goalkeeper)
 
-  when(dbService.getSeasonInfoForPlayer(player, context)).thenReturn(seasonInfo)
+  when(dbService.getSeasonInfoForPlayer(player, context))
+    .thenReturn((seasonInfo, position))
 
   val playerManager = new PlayerManager(dbService)
   val assists: BigDecimal = 1.0

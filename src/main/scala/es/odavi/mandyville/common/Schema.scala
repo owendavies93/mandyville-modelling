@@ -130,6 +130,11 @@ trait InsertSchema extends Schema {
 
   implicit val fplPositionInsertMeta = insertMeta[FPLPosition](_.id)
 
+  implicit val positionCategoryDecoder: Decoder[PositionCategory] =
+    decoder((index, row) =>
+      PositionCategory.withName(row.getObject(index).toString)
+    )
+
   implicit val positionCategoryEncoder: Encoder[PositionCategory] =
     encoder(
       java.sql.Types.VARCHAR,
