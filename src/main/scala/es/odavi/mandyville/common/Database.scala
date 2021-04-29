@@ -54,7 +54,9 @@ object Database extends DatabaseConfig {
   dbConfig.setIdleTimeout(1000)
 
   private val dbSource = new HikariDataSource(dbConfig)
-  val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource) with Schema
+
+  val ctx = new PostgresJdbcContext[SnakeCase](SnakeCase, dbSource)
+    with InsertSchema
 }
 
 /** An implementation of DockerReadyChecker, used to wait for the

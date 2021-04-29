@@ -1,8 +1,8 @@
 package es.odavi.mandyville
 
-import es.odavi.mandyville.common.{Database, Schema}
 import es.odavi.mandyville.common.entity.PositionCategory._
 import es.odavi.mandyville.common.entity._
+import es.odavi.mandyville.common.{Database, InsertSchema}
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 
 /** A generic interface for interacting with a quill context for
@@ -26,7 +26,7 @@ trait PlayerDatabaseService {
   * TODO: proper scaladoc
   */
 class PlayerDatabaseImp(
-  ctx: PostgresJdbcContext[SnakeCase] with Schema = Database.ctx
+  ctx: PostgresJdbcContext[SnakeCase] with InsertSchema = Database.ctx
 ) extends PlayerDatabaseService {
   import ctx._
 
