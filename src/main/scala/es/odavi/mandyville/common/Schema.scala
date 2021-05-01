@@ -121,6 +121,15 @@ trait InsertSchema extends Schema {
       fixtures.insert(lift(f)).returningGenerated(_.id)
     }
 
+  implicit val fPLGameweekInsertMeta = insertMeta[FPLGameweek](_.id)
+
+  def insertFPLGameweek(
+    f: FPLGameweek
+  ): Quoted[ActionReturning[FPLGameweek, Index]] =
+    quote {
+      fplGameweeks.insert(lift(f)).returningGenerated(_.id)
+    }
+
   implicit val fplSeasonInfoInsertMeta = insertMeta[FPLSeasonInfo](_.id)
 
   def insertFPLSeasonInfo(f: FPLSeasonInfo): Quoted[Insert[FPLSeasonInfo]] =
@@ -144,6 +153,15 @@ trait InsertSchema extends Schema {
   def insertFPLPosition(f: FPLPosition): Quoted[Insert[FPLPosition]] =
     quote {
       fplPositions.insert(lift(f))
+    }
+
+  implicit val fPLPlayerGameweekInsertMeta = insertMeta[FPLPlayerGameweek](_.id)
+
+  def insertFPLPlayerGameweek(
+    f: FPLPlayerGameweek
+  ): Quoted[Insert[FPLPlayerGameweek]] =
+    quote {
+      fplPlayersGameweeks.insert(lift(f))
     }
 
   implicit val playerInsertMeta = insertMeta[Player](_.id)
