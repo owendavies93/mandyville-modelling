@@ -1,7 +1,6 @@
 package es.odavi.mandyville
 
 import es.odavi.mandyville.common.entity.{
-  Country,
   FPLPlayerGameweek,
   Fixture,
   Player,
@@ -107,6 +106,28 @@ object TestUtils {
       maybeInt,
       maybeInt,
       maybeInt
+    )
+
+  /** Generates a dummy FPLPlayerGameweek object
+    *
+    * @param playerId the ID to use for the player
+    * @param fplGameweekId the ID to use for the gameweek
+    */
+  def getDummyPlayerGameweek(
+    playerId: Int,
+    fplGameweekId: Int
+  ): FPLPlayerGameweek =
+    FPLPlayerGameweek(
+      randomId,
+      playerId,
+      fplGameweekId,
+      randomShort,
+      randomShort,
+      randomShort,
+      randomBigDecimal,
+      randomInt,
+      randomInt,
+      randomInt
     )
 
   private def maybe[T](thing: T): Option[T] =
