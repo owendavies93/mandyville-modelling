@@ -49,7 +49,7 @@ class PlayerDatabaseImp(
         g <-
           fplGameweeks
             .join(g => g.id == pg.fplGameweekId)
-            .filter(g => g.season == 2020)
+            .filter(g => g.season == lift(season))
       } yield p
     })
 
