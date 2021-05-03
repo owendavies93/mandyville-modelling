@@ -11,7 +11,7 @@ val scalaTic = "org.scalactic"  %% "scalactic"     % testVersion
 val scalaTest = "org.scalatest" %% "scalatest"     % testVersion
 val mockito = "org.mockito"     %% "mockito-scala" % mockVersion
 
-val quillVersion = "3.7.0"
+val quillVersion = "3.7.1"
 
 val quill = Seq(
   "io.getquill" %% "quill-async-postgres",
