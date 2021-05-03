@@ -1,6 +1,8 @@
 package es.odavi.mandyville
 
+import es.odavi.mandyville.common.{Database, InsertSchema}
 import es.odavi.mandyville.common.entity.FPLGameweek
+import io.getquill.{PostgresJdbcContext, SnakeCase}
 
 /** A generic interface for interacting with a quill context for
   * fetching gameweek information from the mandyville database
@@ -12,9 +14,10 @@ trait GameweekDatabaseService {
 /** An implementation of GameweekDatabaseService using common.Database
   * to fetch information from the mandyville database
   */
-private class GameweekDatabaseImp extends GameweekDatabaseService {
-  import es.odavi.mandyville.common.Database.ctx
-  import es.odavi.mandyville.common.Database.ctx._
+class GameweekDatabaseImp(
+  ctx: PostgresJdbcContext[SnakeCase] with InsertSchema = Database.ctx
+) extends GameweekDatabaseService {
+  import ctx._
 
   override def getGameweek(season: Short, gameweek: Short): FPLGameweek = {
     val q = quote {
