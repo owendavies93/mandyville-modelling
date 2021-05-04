@@ -27,7 +27,7 @@ val dockerIt = Seq(
   "com.whisk" %% "docker-testkit-impl-spotify"
 ).map(_ % dIVersion)
 
-val flywayVersion = "7.8.1"
+val flywayVersion = "7.8.2"
 val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
 
 val sLVersion = "3.9.3"
