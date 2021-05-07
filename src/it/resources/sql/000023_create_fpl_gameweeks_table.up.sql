@@ -1,1 +1,0 @@
-../meta/migrations/000023_create_fpl_gameweeks_table.up.sql

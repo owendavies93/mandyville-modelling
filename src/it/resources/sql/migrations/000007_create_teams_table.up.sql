@@ -1,0 +1,1 @@
+../../meta/migrations/000007_create_teams_table.up.sql

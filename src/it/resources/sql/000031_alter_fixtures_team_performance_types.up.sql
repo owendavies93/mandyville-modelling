@@ -1,1 +1,0 @@
-../meta/migrations/000031_alter_fixtures_team_performance_types.up.sql

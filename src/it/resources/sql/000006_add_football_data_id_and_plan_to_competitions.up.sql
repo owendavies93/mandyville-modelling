@@ -1,1 +1,0 @@
-../meta/migrations/000006_add_football_data_id_and_plan_to_competitions.up.sql

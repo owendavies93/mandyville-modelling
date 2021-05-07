@@ -1,1 +1,0 @@
-../meta/migrations/000026_create_fpl_names_table.up.sql

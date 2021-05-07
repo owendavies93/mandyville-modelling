@@ -1,1 +1,0 @@
-../meta/migrations/000028_create_fpl_season_info.up.sql

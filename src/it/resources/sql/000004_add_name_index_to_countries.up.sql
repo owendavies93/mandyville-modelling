@@ -1,1 +1,0 @@
-../meta/migrations/000004_add_name_index_to_countries.up.sql

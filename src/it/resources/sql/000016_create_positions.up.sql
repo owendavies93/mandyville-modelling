@@ -1,1 +1,0 @@
-../meta/migrations/000016_create_positions.up.sql

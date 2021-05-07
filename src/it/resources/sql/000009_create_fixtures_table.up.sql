@@ -1,1 +1,0 @@
-../meta/migrations/000009_create_fixtures_table.up.sql

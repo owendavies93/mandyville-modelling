@@ -1,1 +1,0 @@
-../meta/migrations/000012_create_players_fixtures_table.up.sql

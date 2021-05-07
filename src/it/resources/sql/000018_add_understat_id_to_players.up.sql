@@ -1,1 +1,0 @@
-../meta/migrations/000018_add_understat_id_to_players.up.sql

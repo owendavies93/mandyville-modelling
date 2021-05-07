@@ -1,1 +1,0 @@
-../meta/migrations/000025_add_fpl_id_to_players.up.sql
