@@ -36,7 +36,7 @@ val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % sLVersion
 val logbackVersion = "1.2.3"
 val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
 
-envVars in IntegrationTest := Map(
+IntegrationTest / envVars := Map(
   "DOCKER_HOST" -> "unix:///var/run/docker.sock"
 )
 
@@ -60,4 +60,4 @@ lazy val settings = (project in file("."))
 
 inConfig(IntegrationTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings)
 
-parallelExecution in IntegrationTest := false
+IntegrationTest / parallelExecution := false
