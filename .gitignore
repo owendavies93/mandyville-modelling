@@ -15,4 +15,3 @@ target/
 *.swo
 
 src/main/resources/production.conf
-src/it/resources/sql/test_data.sql
