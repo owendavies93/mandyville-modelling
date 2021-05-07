@@ -139,9 +139,9 @@ trait TestPostgresDatabase extends DockerKit with DatabaseConfig {
   */
 trait FlywayConfig {
 
-  /** Define the configuration and set the various options required to
-    * load migration files from the submodule defined the the resources
-    * folder.
+  /** Defines the configuration and sets the various options required
+    * to load migration files from the submodule defined the the
+    * resources folder.
     *
     * @return an instance of Flyway's FluentConfiguration
     */
