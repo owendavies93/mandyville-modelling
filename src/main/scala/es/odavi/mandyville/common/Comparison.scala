@@ -19,4 +19,6 @@ case class Comparison(
   /** The absolute difference between the expected and actual value
     */
   def difference: BigDecimal = expected.abs - actual.abs
+
+  override def toString: String = s"$player: $expected, $actual"
 }

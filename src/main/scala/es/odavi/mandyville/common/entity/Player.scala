@@ -21,4 +21,6 @@ case class Player(
   footballDataId: Option[Int],
   understatId: Option[Int],
   fplId: Option[Int]
-)
+) {
+  override def toString: String = s"$firstName $lastName"
+}
