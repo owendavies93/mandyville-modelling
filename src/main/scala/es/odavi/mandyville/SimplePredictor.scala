@@ -40,10 +40,14 @@ class SimplePredictor(
     * average of the xa metric for all previous fixtures that the
     * player has been involved in.
     */
-  override def expectedAssists(): BigDecimal =
-    bigDecimalAverage(getFixtures.filter { case (p, _) => p.xa.isDefined }.map {
-      case (p, _) => p.xa.get
-    })
+  override def expectedAssists(): BigDecimal = {
+    val fixtures = getFixtures.filter { case (p, _) => p.xa.isDefined }
+    if (fixtures.isEmpty) 0
+    else
+      bigDecimalAverage(fixtures.map {
+        case (p, _) => p.xa.get
+      })
+  }
 
   /** Find the expected number of goals conceded by the player's team
     * in the gameweek given by the context.
@@ -72,10 +76,14 @@ class SimplePredictor(
     * the average of the xg metric for all previous fixtures that the
     * player has been involved in.
     */
-  override def expectedGoals(): BigDecimal =
-    bigDecimalAverage(getFixtures.filter { case (p, _) => p.xg.isDefined }.map {
-      case (p, _) => p.xg.get
-    })
+  override def expectedGoals(): BigDecimal = {
+    val fixtures = getFixtures.filter { case (p, _) => p.xg.isDefined }
+    if (fixtures.isEmpty) 0
+    else
+      bigDecimalAverage(fixtures.map {
+        case (p, _) => p.xg.get
+      })
+  }
 
   /** Find the expected number of minutes played by the player in the
     * gameweek given by the context.
