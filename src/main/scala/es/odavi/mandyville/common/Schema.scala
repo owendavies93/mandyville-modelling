@@ -80,6 +80,11 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
       querySchema[Position]("positions")
     }
 
+  def predictions: Quoted[EntityQuery[Prediction]] =
+    quote {
+      querySchema[Prediction]("predictions")
+    }
+
   def teams: Quoted[EntityQuery[Team]] =
     quote {
       querySchema[Team]("teams")
@@ -176,6 +181,13 @@ trait InsertSchema extends Schema {
   def insertPlayerFixture(pf: PlayerFixture): Quoted[Insert[PlayerFixture]] =
     quote {
       playersFixtures.insert(lift(pf))
+    }
+
+  implicit val predictionInsertMeta = insertMeta[Prediction](_.id)
+
+  def insertPrediction(p: Prediction): Quoted[Insert[Prediction]] =
+    quote {
+      predictions.insert(lift(p))
     }
 
   implicit val teamInsertMeta = insertMeta[Team](_.id)
