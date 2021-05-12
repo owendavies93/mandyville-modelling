@@ -65,11 +65,6 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
       querySchema[FPLSeasonInfo]("fpl_season_info")
     }
 
-  def positions: Quoted[EntityQuery[Position]] =
-    quote {
-      querySchema[Position]("positions")
-    }
-
   def players: Quoted[EntityQuery[Player]] =
     quote {
       querySchema[Player]("players")
@@ -78,6 +73,11 @@ trait Schema { this: Context[PostgresDialect, SnakeCase] =>
   def playersFixtures: Quoted[EntityQuery[PlayerFixture]] =
     quote {
       querySchema[PlayerFixture]("players_fixtures")
+    }
+
+  def positions: Quoted[EntityQuery[Position]] =
+    quote {
+      querySchema[Position]("positions")
     }
 
   def teams: Quoted[EntityQuery[Team]] =
