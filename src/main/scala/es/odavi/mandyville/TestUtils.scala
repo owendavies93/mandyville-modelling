@@ -4,7 +4,8 @@ import es.odavi.mandyville.common.entity.{
   FPLPlayerGameweek,
   Fixture,
   Player,
-  PlayerFixture
+  PlayerFixture,
+  Prediction
 }
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
@@ -128,6 +129,25 @@ object TestUtils {
       randomInt,
       randomInt,
       randomInt
+    )
+
+  /** Generates a dummy Prediction object
+    *
+    * @param playerId the ID to use for the player
+    * @param fplGameweekId the ID to use for the gameweek
+    * @param predictorId the ID of the predictor - optional
+    */
+  def getDummyPrediction(
+    playerId: Int,
+    fplGameweekId: Int,
+    predictorId: Int = randomId
+  ): Prediction =
+    Prediction(
+      randomId,
+      playerId,
+      fplGameweekId,
+      predictorId,
+      randomBigDecimal
     )
 
   private def maybe[T](thing: T): Option[T] =
