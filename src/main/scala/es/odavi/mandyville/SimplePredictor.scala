@@ -107,4 +107,9 @@ class SimplePredictor(
 
     fixtures.get
   }
+
+  /** The unique ID of this predictor, used primarily when saving
+    * results.
+    */
+  override def id: Int = 1
 }

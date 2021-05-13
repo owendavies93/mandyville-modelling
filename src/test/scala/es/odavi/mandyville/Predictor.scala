@@ -35,6 +35,7 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
     override def expectedConceded() = 3.0
     override def expectedGoals(): BigDecimal = goals
     override def expectedMinutes() = 0
+    override def id = 1
   }
 
   test("Returns zero points for zero minutes") {

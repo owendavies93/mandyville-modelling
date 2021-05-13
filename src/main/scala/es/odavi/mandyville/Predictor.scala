@@ -30,6 +30,11 @@ abstract class Predictor(
     Comparison(player, context, prediction, BigDecimal(actual))
   }
 
+  /** The unique ID of this predictor, used primarily when saving
+    * results.
+    */
+  def id: Int
+
   /** Find the predicted points for the gameweek provided in the
     * given context.
     *
