@@ -29,7 +29,7 @@ class PredictionDatabaseImp(
   override def insertOrUpdatePrediction(p: Prediction): Int = {
     val q = quote {
       predictions
-        .insert(p)
+        .insert(lift(p))
         .onConflictUpdate(_.playerId, _.fplGameweekId, _.predictorId)((t, e) =>
           t.prediction -> e.prediction
         )
