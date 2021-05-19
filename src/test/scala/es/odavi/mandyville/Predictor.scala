@@ -28,25 +28,25 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
   val assists: BigDecimal = 1.0
   val goals: BigDecimal = 1.0
 
-  class NoPlayPredictorStub extends Predictor(player, context, playerManager) {
-    override def chanceOfRedCard() = 0
-    override def chanceOfYellowCard() = 0.4
-    override def expectedAssists(): BigDecimal = assists
-    override def expectedConceded() = 3.0
-    override def expectedGoals(): BigDecimal = goals
-    override def expectedMinutes() = 0
+  class NoPlayPredictorStub extends Predictor(context, playerManager) {
+    override def chanceOfRedCard(p: Player) = 0
+    override def chanceOfYellowCard(p: Player) = 0.4
+    override def expectedAssists(p: Player): BigDecimal = assists
+    override def expectedConceded(p: Player) = 3.0
+    override def expectedGoals(p: Player): BigDecimal = goals
+    override def expectedMinutes(p: Player) = 0
     override def id = 1
   }
 
   test("Returns zero points for zero minutes") {
     assertResult(0) {
       val noPlay = new NoPlayPredictorStub()
-      noPlay.pointsForGameweek()
+      noPlay.pointsForGameweek(player)
     }
   }
 
   class Full90PredictorStub extends NoPlayPredictorStub {
-    override def expectedMinutes() = 90
+    override def expectedMinutes(p: Player) = 90
   }
 
   test("Returns correct points for full 90 minutes prediction") {
@@ -58,12 +58,12 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val full90 = new Full90PredictorStub()
-      full90.pointsForGameweek()
+      full90.pointsForGameweek(player)
     }
   }
 
   class Full90CleanSheetPredictor extends Full90PredictorStub {
-    override def expectedConceded() = 0.4
+    override def expectedConceded(p: Player) = 0.4
   }
 
   test("Returns correct points for clean sheet") {
@@ -75,12 +75,12 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val cleanSheet = new Full90CleanSheetPredictor()
-      cleanSheet.pointsForGameweek()
+      cleanSheet.pointsForGameweek(player)
     }
   }
 
   class SubPredictor extends NoPlayPredictorStub {
-    override def expectedMinutes() = 15
+    override def expectedMinutes(p: Player) = 15
   }
 
   test("Returns correct points total for substitute") {
@@ -91,7 +91,7 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
 
     assertResult(expectedPoints) {
       val sub = new SubPredictor()
-      sub.pointsForGameweek()
+      sub.pointsForGameweek(player)
     }
   }
 
@@ -101,7 +101,7 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
       .thenReturn(List(actualPerformance))
 
     val predictor = new Full90PredictorStub()
-    val evaluation = predictor.comparePrediction()
+    val evaluation = predictor.comparePrediction(player)
 
     assert(evaluation.difference <= evaluation.expected + evaluation.actual)
   }

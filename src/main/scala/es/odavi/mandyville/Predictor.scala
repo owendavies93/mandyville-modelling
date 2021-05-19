@@ -14,7 +14,6 @@ import scala.math.BigDecimal.RoundingMode
   * @param playerManager an instance of PlayerManager
   */
 abstract class Predictor(
-  player: Player,
   context: Context,
   playerManager: PlayerManager
 ) {
@@ -23,8 +22,8 @@ abstract class Predictor(
     *
     * @return an instance of Comparison representing our comparison
     */
-  def comparePrediction(): Comparison = {
-    val prediction = pointsForGameweek()
+  def comparePrediction(player: Player): Comparison = {
+    val prediction = pointsForGameweek(player)
     val perf = playerManager.getFPLPerformance(player, context)
     val actual = perf.totalPoints
     Comparison(player, context, prediction, BigDecimal(actual))
@@ -44,17 +43,17 @@ abstract class Predictor(
     *
     * @return the total predicted points
     */
-  def pointsForGameweek(): BigDecimal = {
-    val mins = expectedMinutes()
+  def pointsForGameweek(player: Player): BigDecimal = {
+    val mins = expectedMinutes(player)
 
     if (mins == 0) 0
     else {
       val position = playerManager.getPositionForPlayer(player, context)
 
-      val goalPoints = expectedGoals() * GoalPoints(position)
-      val assistPoints = expectedAssists() * AssistPoints
+      val goalPoints = expectedGoals(player) * GoalPoints(position)
+      val assistPoints = expectedAssists(player) * AssistPoints
 
-      val conceded = expectedConceded()
+      val conceded = expectedConceded(player)
 
       // TODO: do we need to think about whether the player is actually on the
       //       pitch for the conceded goals here?
@@ -65,8 +64,8 @@ abstract class Predictor(
           lastEven * TwoGoalsConcededPoints
         } else BigDecimal(0)
 
-      val redPenalty = chanceOfRedCard() * RedCardPoints
-      val yellowPenalty = chanceOfYellowCard() * YellowCardPoints
+      val redPenalty = chanceOfRedCard(player) * RedCardPoints
+      val yellowPenalty = chanceOfYellowCard(player) * YellowCardPoints
 
       val appearancePoints = if (mins >= 60) FullPlayPoints else SubPlayPoints
 
@@ -84,28 +83,28 @@ abstract class Predictor(
   /** Find the probability of the player getting a red card in the
     * gameweek given by the context.
     */
-  def chanceOfRedCard(): BigDecimal
+  def chanceOfRedCard(player: Player): BigDecimal
 
   /** Find the probability of the player getting a yellow card in the
     * gameweek given by the context.
     */
-  def chanceOfYellowCard(): BigDecimal
+  def chanceOfYellowCard(player: Player): BigDecimal
 
   /** Find the expected number of assists for the player
     */
-  def expectedAssists(): BigDecimal
+  def expectedAssists(player: Player): BigDecimal
 
   /** Find the expected number of goals conceded by the player's team
     * in the gameweek given by the context.
     */
-  def expectedConceded(): BigDecimal
+  def expectedConceded(player: Player): BigDecimal
 
   /** Find the expected number of goals scored by the player
     */
-  def expectedGoals(): BigDecimal
+  def expectedGoals(player: Player): BigDecimal
 
   /** Find the expected number of minutes played by the player in the
     * gameweek given by the context
     */
-  def expectedMinutes(): BigDecimal
+  def expectedMinutes(player: Player): BigDecimal
 }

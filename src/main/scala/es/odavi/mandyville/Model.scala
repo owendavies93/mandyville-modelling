@@ -46,12 +46,13 @@ class Model(context: Context, playerManager: PlayerManager) {
     * @return a set of Comparison objects
     */
   def runPredictions[P <: Predictor](
-    factory: (Player, Context, PlayerManager) => P
+    factory: (Context, PlayerManager) => P
   ): Set[Comparison] = {
     val players = playerManager.getAllPlayersForSeason(context.gameweek.season)
+    val predictor = factory(context, playerManager)
 
     players
-      .map(p => factory(p, context, playerManager).comparePrediction())
+      .map(p => predictor.comparePrediction(p))
       .toSet
   }
 

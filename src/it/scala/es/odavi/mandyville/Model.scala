@@ -80,8 +80,8 @@ class ModelSuite
 
     val model = new Model(context, playerManager)
 
-    def factory(p: Player, c: Context, m: PlayerManager): SimplePredictor =
-      new SimplePredictor(p, c, m)
+    def factory(c: Context, m: PlayerManager): SimplePredictor =
+      new SimplePredictor(c, m)
 
     val predictions = model.runPredictions[SimplePredictor](factory)
 

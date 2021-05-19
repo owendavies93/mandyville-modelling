@@ -49,8 +49,8 @@ class SimplePredictorSuite
     when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
 
     val predictor =
-      new SimplePredictor(player, context, new PlayerManager(dbService))
-    val fixtures = predictor.invokePrivate(getFixtures())
+      new SimplePredictor(context, new PlayerManager(dbService))
+    val fixtures = predictor.invokePrivate(getFixtures(player))
 
     assert(fixtures.size == testFixtures.count { case (_, f) => f.hasDate })
   }
@@ -63,52 +63,52 @@ class SimplePredictorSuite
   when(dbService.getAllFixturesForPlayer(player)).thenReturn(testFixtures)
 
   val predictor =
-    new SimplePredictor(player, context, new PlayerManager(dbService))
+    new SimplePredictor(context, new PlayerManager(dbService))
 
   test("getFixtures is cached") {
-    predictor.invokePrivate(getFixtures())
+    predictor.invokePrivate(getFixtures(player))
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
-    predictor.invokePrivate(getFixtures())
+    predictor.invokePrivate(getFixtures(player))
     verify(dbService, times(1)).getAllFixturesForPlayer(player)
   }
 
   test("chanceOfRedCard returns a decimal between 0 and 1") {
-    val red = predictor.chanceOfRedCard()
+    val red = predictor.chanceOfRedCard(player)
     assert(red >= 0)
     assert(red <= 1)
   }
 
   test("chanceOfYellowCard returns a decimal between 0 and 1") {
-    val yellow = predictor.chanceOfYellowCard()
+    val yellow = predictor.chanceOfYellowCard(player)
     assert(yellow >= 0)
     assert(yellow <= 1)
   }
 
   test("goals, assists and conceded are all non-negative and non-zero") {
-    assert(predictor.expectedAssists() > 0)
-    assert(predictor.expectedGoals() > 0)
-    assert(predictor.expectedConceded() > 0)
+    assert(predictor.expectedAssists(player) > 0)
+    assert(predictor.expectedGoals(player) > 0)
+    assert(predictor.expectedConceded(player) > 0)
   }
 
   test("expectedMinutes returns a decimal between 0 and 90 inclusive") {
-    val mins = predictor.expectedMinutes()
+    val mins = predictor.expectedMinutes(player)
     assert(mins >= 0)
     assert(mins <= 90)
   }
 
   test("All calculations are pure functions") {
-    val red = predictor.chanceOfRedCard()
-    val yellow = predictor.chanceOfYellowCard()
-    val mins = predictor.expectedMinutes()
-    val conceded = predictor.expectedConceded()
-    val goals = predictor.expectedGoals()
-    val assists = predictor.expectedAssists()
+    val red = predictor.chanceOfRedCard(player)
+    val yellow = predictor.chanceOfYellowCard(player)
+    val mins = predictor.expectedMinutes(player)
+    val conceded = predictor.expectedConceded(player)
+    val goals = predictor.expectedGoals(player)
+    val assists = predictor.expectedAssists(player)
 
-    assert(red == predictor.chanceOfRedCard())
-    assert(yellow == predictor.chanceOfYellowCard())
-    assert(mins == predictor.expectedMinutes())
-    assert(conceded == predictor.expectedConceded())
-    assert(goals == predictor.expectedGoals())
-    assert(assists == predictor.expectedAssists())
+    assert(red == predictor.chanceOfRedCard(player))
+    assert(yellow == predictor.chanceOfYellowCard(player))
+    assert(mins == predictor.expectedMinutes(player))
+    assert(conceded == predictor.expectedConceded(player))
+    assert(goals == predictor.expectedGoals(player))
+    assert(assists == predictor.expectedAssists(player))
   }
 }

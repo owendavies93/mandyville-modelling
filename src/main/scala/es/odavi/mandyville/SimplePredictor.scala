@@ -11,10 +11,9 @@ import es.odavi.mandyville.common.entity.{Fixture, Player, PlayerFixture}
   * @param playerManager an instance of PlayerManager
   */
 class SimplePredictor(
-  player: Player,
   context: Context,
   playerManager: PlayerManager
-) extends Predictor(player, context, playerManager) {
+) extends Predictor(context, playerManager) {
 
   private var fixtures: Option[List[(PlayerFixture, Fixture)]] = None
 
@@ -24,8 +23,8 @@ class SimplePredictor(
     * Return the proportion of games where the player has received a
     * yellow card.
     */
-  override def chanceOfRedCard(): BigDecimal =
-    booleanProportion(getFixtures.map { case (p, _) => p.redCard })
+  override def chanceOfRedCard(player: Player): BigDecimal =
+    booleanProportion(getFixtures(player).map { case (p, _) => p.redCard })
 
   /** Find the probability of the player getting a yellow card in the
     * gameweek given by the context.
@@ -33,15 +32,15 @@ class SimplePredictor(
     * Return the proportion of games where the player has received a
     * red card.
     */
-  override def chanceOfYellowCard(): BigDecimal =
-    booleanProportion(getFixtures.map { case (p, _) => p.yellowCard })
+  override def chanceOfYellowCard(player: Player): BigDecimal =
+    booleanProportion(getFixtures(player).map { case (p, _) => p.yellowCard })
 
   /** Find the expected number of assists for the player, by taking the
     * average of the xa metric for all previous fixtures that the
     * player has been involved in.
     */
-  override def expectedAssists(): BigDecimal = {
-    val fixtures = getFixtures.filter { case (p, _) => p.xa.isDefined }
+  override def expectedAssists(player: Player): BigDecimal = {
+    val fixtures = getFixtures(player).filter { case (p, _) => p.xa.isDefined }
     if (fixtures.isEmpty) 0
     else
       bigDecimalAverage(fixtures.map {
@@ -57,8 +56,8 @@ class SimplePredictor(
     * single team ID here, because the player may have moved teams -
     * you need to filter by the correct team ID for each fixture.
     */
-  override def expectedConceded(): BigDecimal = {
-    val allGoals: List[Short] = getFixtures
+  override def expectedConceded(player: Player): BigDecimal = {
+    val allGoals: List[Short] = getFixtures(player)
       .filter {
         case (_, f) => f.hasBeenPlayed
       }
@@ -76,8 +75,8 @@ class SimplePredictor(
     * the average of the xg metric for all previous fixtures that the
     * player has been involved in.
     */
-  override def expectedGoals(): BigDecimal = {
-    val fixtures = getFixtures.filter { case (p, _) => p.xg.isDefined }
+  override def expectedGoals(player: Player): BigDecimal = {
+    val fixtures = getFixtures(player).filter { case (p, _) => p.xg.isDefined }
     if (fixtures.isEmpty) 0
     else
       bigDecimalAverage(fixtures.map {
@@ -91,8 +90,8 @@ class SimplePredictor(
     * Return the average number of minutes played by the player in all
     * previous fixtures.
     */
-  override def expectedMinutes(): BigDecimal =
-    bigDecimalAverage(getFixtures.map { case (p, _) => p.minutes })
+  override def expectedMinutes(player: Player): BigDecimal =
+    bigDecimalAverage(getFixtures(player).map { case (p, _) => p.minutes })
 
   private def bigDecimalAverage(l: List[BigDecimal]) =
     l.sum / BigDecimal(l.size)
@@ -101,7 +100,7 @@ class SimplePredictor(
     l.count(_ == true).toFloat / l.size
 
   // Add a caching layer to PlayerManager.getRelevantFixtures
-  private def getFixtures: List[(PlayerFixture, Fixture)] = {
+  private def getFixtures(player: Player): List[(PlayerFixture, Fixture)] = {
     if (fixtures.isEmpty)
       fixtures = Option(playerManager.getRelevantFixtures(player, context))
 
