@@ -5,8 +5,10 @@ import com.whisk.docker.DockerFactory
 import com.whisk.docker.impl.spotify.SpotifyDockerFactory
 import com.whisk.docker.scalatest.DockerTestKit
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import es.odavi.mandyville.TestUtils.getDummyPlayer
 import es.odavi.mandyville.common.entity.Player
 import es.odavi.mandyville.common.{
+  Comparison,
   FlywayConfig,
   InsertSchema,
   TestPostgresDatabase
@@ -90,5 +92,48 @@ class ModelSuite
     val playerCount = ctx.run(quote(players.map(_.id)).size)
 
     assert(predictions.size === playerCount)
+  }
+
+  test("Predictions are correctly stored") { fixture =>
+    import fixture.ctx
+    import fixture.ctx._
+
+    val season: Short = 2020
+    val gw: Short = 10
+    val gameweekManager = new GameweekManager(new GameweekDatabaseImp(ctx))
+
+    val gameweek = gameweekManager.getGameweek(season, gw)
+    val context = Context(gameweek)
+    val playerManager = new PlayerManager(new PlayerDatabaseImp(ctx))
+    val predictionManager =
+      new PredictionManager(new PredictionDatabaseImp(ctx))
+
+    val model = new Model(context, playerManager, predictionManager)
+
+    val predictor = new SimplePredictor(context, playerManager)
+
+    val expected = 4.5
+    val actual = 3.4
+    val player = ctx
+      .run(quote {
+        players
+      }.take(1))
+      .head
+
+    val comparison = Comparison(
+      player,
+      context,
+      predictor,
+      expected,
+      actual
+    )
+
+    model.storePredictions(Set(comparison))
+
+    val fromDb = ctx.run(quote {
+      predictions
+    })
+    assert(fromDb.size === 1)
+    assert(fromDb.head.prediction === expected)
   }
 }

@@ -60,6 +60,26 @@ class Model(
       .toSet
   }
 
+  /** Store a set of predictions. Generally this is designed to be
+    * called using the output of runPredictions, but it doesn't have
+    * to be; the set of Comparison objects could be from multiple
+    * Predictors or constructed by hand.
+    *
+    * @param cs the set of Comparison objects from which to create
+    *           Prediction objects
+    */
+  def storePredictions(cs: Set[Comparison]): Unit =
+    cs.foreach { c =>
+      val prediction = Prediction(
+        1,
+        c.player.id,
+        c.context.gameweek.id,
+        c.predictor.id,
+        c.expected
+      )
+      predictionManager.insertOrUpdatePrediction(prediction)
+    }
+
   private def mean[T](seq: Iterable[T])(implicit T: Fractional[T]): T =
     T.div(seq.sum, T.fromInt(seq.size))
 

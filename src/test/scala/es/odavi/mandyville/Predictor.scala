@@ -107,6 +107,7 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
   }
 
   private val newId = 2
+
   class DifferentIDPredictor extends SubPredictor {
     override def id: Int = newId
   }
