@@ -105,4 +105,16 @@ class PredictorSuite extends AnyFunSuite with MockitoSugar {
 
     assert(evaluation.difference <= evaluation.expected + evaluation.actual)
   }
+
+  private val newId = 2
+  class DifferentIDPredictor extends SubPredictor {
+    override def id: Int = newId
+  }
+
+  test("Correct predictor ID is passed to Comparison object") {
+    val predictor = new DifferentIDPredictor()
+
+    val evaluation = predictor.comparePrediction(player)
+    assert(evaluation.predictor.id === newId)
+  }
 }

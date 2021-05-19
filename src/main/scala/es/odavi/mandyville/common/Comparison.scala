@@ -1,6 +1,6 @@
 package es.odavi.mandyville.common
 
-import es.odavi.mandyville.Context
+import es.odavi.mandyville.{Context, Predictor}
 import es.odavi.mandyville.common.entity.Player
 
 /** A comparison result between two values
@@ -12,6 +12,7 @@ import es.odavi.mandyville.common.entity.Player
 case class Comparison(
   player: Player,
   context: Context,
+  predictor: Predictor,
   expected: BigDecimal,
   actual: BigDecimal
 ) {

@@ -26,7 +26,7 @@ abstract class Predictor(
     val prediction = pointsForGameweek(player)
     val perf = playerManager.getFPLPerformance(player, context)
     val actual = perf.totalPoints
-    Comparison(player, context, prediction, BigDecimal(actual))
+    Comparison(player, context, this, prediction, BigDecimal(actual))
   }
 
   /** The unique ID of this predictor, used primarily when saving
