@@ -77,8 +77,10 @@ class ModelSuite
     val gameweek = gameweekManager.getGameweek(season, gw)
     val context = Context(gameweek)
     val playerManager = new PlayerManager(new PlayerDatabaseImp(ctx))
+    val predictionManager =
+      new PredictionManager(new PredictionDatabaseImp(ctx))
 
-    val model = new Model(context, playerManager)
+    val model = new Model(context, playerManager, predictionManager)
 
     def factory(c: Context, m: PlayerManager): SimplePredictor =
       new SimplePredictor(c, m)

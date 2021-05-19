@@ -28,16 +28,21 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
 
   private val playerManager = new PlayerManager(dbService)
 
-  class PredictorStub(p: Player, c: Context, pm: PlayerManager)
-      extends SimplePredictor(p, c, pm) {
-    override def pointsForGameweek(): BigDecimal = p.id * 3
+  private val predDbService = mock[PredictionDatabaseService]
+
+  private val predictionManager = new PredictionManager(predDbService)
+
+  class PredictorStub(c: Context, pm: PlayerManager)
+      extends SimplePredictor(c, pm) {
+    override def pointsForGameweek(p: Player): BigDecimal = p.id * 3
   }
 
-  def factory(p: Player, c: Context, pm: PlayerManager) =
-    new PredictorStub(p, c, pm)
+  def factory(c: Context, pm: PlayerManager) =
+    new PredictorStub(c, pm)
 
   test("runPredictions returns correct predictions and performances") {
-    val predictions = new Model(context, playerManager).runPredictions(factory)
+    val predictions = new Model(context, playerManager, predictionManager)
+      .runPredictions(factory)
 
     assert(predictions.size === 1)
     assert(predictions.head.actual === performances.head.totalPoints)
@@ -47,7 +52,8 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
     when(dbService.getAllPlayersForSeason(season))
       .thenReturn(List(player, player))
 
-    val predictions = new Model(context, playerManager).runPredictions(factory)
+    val predictions = new Model(context, playerManager, predictionManager)
+      .runPredictions(factory)
 
     assert(predictions.size === 1)
   }
@@ -57,10 +63,10 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
       .thenReturn(List(player, player2))
     when(dbService.getFPLPerformance(player2, context)).thenReturn(performances)
 
-    val model = new Model(context, playerManager)
+    val model = new Model(context, playerManager, predictionManager)
     val predictions = model.runPredictions(factory)
 
-    assert(predictions.size == 2)
+    assert(predictions.size === 2)
   }
 
   test("correlation coefficient is between 1 and -1") {
@@ -69,7 +75,7 @@ class ModelSuite extends AnyFunSuite with MockitoSugar {
     val perf2 = List(getDummyPerformance(player2.id, gw))
     when(dbService.getFPLPerformance(player2, context)).thenReturn(perf2)
 
-    val model = new Model(context, playerManager)
+    val model = new Model(context, playerManager, predictionManager)
     val predictions = model.runPredictions(factory)
 
     val corr = model.correlatePredictions(predictions)

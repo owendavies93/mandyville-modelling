@@ -1,7 +1,7 @@
 package es.odavi.mandyville
 
 import es.odavi.mandyville.common.Comparison
-import es.odavi.mandyville.common.entity.Player
+import es.odavi.mandyville.common.entity.{Player, Prediction}
 
 /** This class provides methods for aggregating predictions outputted
   * by a predictor, and performing analysis on those predictions. It
@@ -12,7 +12,11 @@ import es.odavi.mandyville.common.entity.Player
   * @param playerManager an instance of PlayerManager, mostly used for
   *                      database interaction
   */
-class Model(context: Context, playerManager: PlayerManager) {
+class Model(
+  context: Context,
+  playerManager: PlayerManager,
+  predictionManager: PredictionManager
+) {
 
   /** Calculate the correlation of the predicted results and the actual
     * real life scores.
