@@ -30,7 +30,7 @@ val dockerIt = Seq(
 val flywayVersion = "7.8.1"
 val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
 
-val sLVersion = "3.9.3"
+val sLVersion = "3.9.4"
 val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % sLVersion
 
 val logbackVersion = "1.2.3"
