@@ -6,7 +6,7 @@ ThisBuild / scalaVersion := "2.13.0"
 ThisBuild / organization := "es.odavi.mandyville"
 
 val testVersion = "3.2.7"
-val mockVersion = "1.16.37"
+val mockVersion = "1.16.42"
 val scalaTic = "org.scalactic"  %% "scalactic"     % testVersion
 val scalaTest = "org.scalatest" %% "scalatest"     % testVersion
 val mockito = "org.mockito"     %% "mockito-scala" % mockVersion
