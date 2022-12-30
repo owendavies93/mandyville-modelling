@@ -18,7 +18,7 @@ val quill = Seq(
   "io.getquill" %% "quill-jdbc"
 ).map(_ % quillVersion)
 
-val pgVersion = "42.2.24"
+val pgVersion = "42.2.27"
 val pg = "org.postgresql" % "postgresql" % pgVersion
 
 val dIVersion = "0.9.9"
